@@ -32,16 +32,26 @@ namespace Charcoal\Polyglot;
 interface MultilingualAwareInterface
 {
     /**
-     * Retrieve a filterable list of the object's available language identifiers.
+     * Retrieve a filterable list of the object's available languages.
      *
      * By default, only language identifiers are returned.
      *
      * @param  (LanguageInterface|string)[] $langs
      *     If an array of one or more lanagues is provided, the method returns
      *     a subset of the object's available languages (if any).
-     * @return array An array of available language identifiers
+     * @return array An array of available languages
      */
     public function languages(array $langs = []);
+
+    /**
+     * Retrieve the object's list of available language identifiers.
+     *
+     * @param  (LanguageInterface|string)[] $langs
+     *     If an array of one or more lanagues is provided, the method returns
+     *     a subset of the object's available languages (if any).
+     * @return array An array of available language identifiers
+     */
+    public function availableLanguages(array $langs = []);
 
     /**
      * Assign a list of languages to the object.

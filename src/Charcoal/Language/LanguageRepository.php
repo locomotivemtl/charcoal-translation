@@ -48,39 +48,6 @@ class LanguageRepository extends FileLoader
     }
 
     /**
-     * Set the loader's identifier.
-     *
-     * @param  mixed $ident A subset of language identifiers.
-     * @throws InvalidArgumentException If the ident is invalid.
-     * @return FileLoader Chainable
-     */
-    public function setIdent($ident)
-    {
-        if (is_array($ident)) {
-            if (count($ident)) {
-                sort($ident);
-                $ident = implode(',', $ident);
-            } else {
-                $ident = 'all';
-            }
-        }
-
-        if (!is_string($ident)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    '%1$s::%2$s() — Identifier must be a string.',
-                    __CLASS__,
-                    __FUNCTION__
-                )
-            );
-        }
-
-        $this->ident = $ident;
-
-        return $this;
-    }
-
-    /**
      * Retrieve the LanguageInterface model.
      *
      * @return LanguageInterface
@@ -103,71 +70,6 @@ class LanguageRepository extends FileLoader
     public function setSource($source)
     {
         $this->source = $source;
-
-        return $this;
-    }
-
-    /**
-     * Alias of {@see FileLoader::searchPath()}
-     *
-     * @return string[]
-     */
-    public function paths()
-    {
-        return $this->searchPath();
-    }
-
-    /**
-     * Assign a list of paths.
-     *
-     * @param  string[] $paths The list of paths to add.
-     * @return self
-     */
-    public function setPaths(array $paths)
-    {
-        $this->searchPath = [];
-        $this->addPaths($paths);
-
-        return $this;
-    }
-
-    /**
-     * Append a list of paths.
-     *
-     * @param  string[] $paths The list of paths to add.
-     * @return self
-     */
-    public function addPaths(array $paths)
-    {
-        foreach ($paths as $path) {
-            $this->addPath($path);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Append a path.
-     *
-     * @param  string $path A file or directory path.
-     * @throws InvalidArgumentException if the path does not exist or is invalid
-     * @return \Charcoal\Service\Loader\Metadata (Chainable)
-     */
-    public function addPath($path)
-    {
-        if (!is_string($path)) {
-            throw new InvalidArgumentException(
-                'Path should be a string.'
-            );
-        }
-
-        if (!file_exists($path)) {
-            throw new InvalidArgumentException(
-                sprintf('Path does not exist: "%s"', $path)
-            );
-        }
-
-        $this->searchPath[] = $path;
 
         return $this;
     }
@@ -208,7 +110,7 @@ class LanguageRepository extends FileLoader
         $index = [];
 
         if ($this->cache) {
-            $item = $this->cache->getItem('languages', 'index', $ident);
+            $item = $this->cache->getItem('languages/index/'.$ident);
 
             $index = $item->get();
             if ($item->isMiss()) {
@@ -230,6 +132,8 @@ class LanguageRepository extends FileLoader
                 }
 
                 $item->set($index);
+
+                $this->cache->save($item);
             }
         } else {
             $index = $this->loadFromRepositories();
@@ -247,6 +151,7 @@ class LanguageRepository extends FileLoader
     public function loadFromRepositories()
     {
         $searchPaths = $this->paths();
+
         if (empty($searchPaths)) {
             return null;
         }

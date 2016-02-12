@@ -53,7 +53,7 @@ trait UnilingualAwareTrait
             $this->language = (string)$lang['ident'];
         } elseif ($lang instanceof LanguageInterface) {
             $this->language = $lang;
-        } elseif (is_string((string) $lang)) {
+        } elseif (is_string((string)$lang)) {
             $this->language = (string)$lang;
         } else {
             throw new InvalidArgumentException(

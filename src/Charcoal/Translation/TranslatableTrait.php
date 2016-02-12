@@ -74,16 +74,43 @@ trait TranslatableTrait
     public function resolveSpecialLanguages()
     {
         if (count($this->languages)) {
-            if (!isset($this->languages[$this->defaultLanguage])) {
+            if (
+                !isset($this->defaultLanguage) ||
+                !array_key_exists($this->defaultLanguage, $this->languages)
+            ) {
                 $this->setDefaultLanguage();
             }
 
-            if (!isset($this->languages[$this->currentLanguage])) {
+            if (
+                !isset($this->currentLanguage) ||
+                !array_key_exists($this->currentLanguage, $this->languages)
+            ) {
                 $this->setCurrentLanguage();
             }
         }
 
         return $this;
+    }
+
+    /**
+     * Retrieve the object's list of available languages.
+     *
+     * @param  (LanguageInterface|string)[] $langs
+     *     If an array of one or more lanagues is provided, the method returns
+     *     a subset of the object's available languages (if any).
+     * @return array An array of available languages
+     */
+    public function languages(array $langs = [])
+    {
+        if (count($langs)) {
+            array_walk($langs, function (&$val, $key) {
+                $val = self::resolveLanguage_ident($val);
+            });
+
+            return array_intersect_key($this->languages, array_flip($langs));
+        }
+
+        return $this->languages;
     }
 
     /**
@@ -94,7 +121,7 @@ trait TranslatableTrait
      *     a subset of the object's available languages (if any).
      * @return array An array of available language identifiers
      */
-    public function languages(array $langs = [])
+    public function availableLanguages(array $langs = [])
     {
         $available = array_keys($this->languages);
 
@@ -104,7 +131,6 @@ trait TranslatableTrait
             });
 
             return array_intersect($available, $langs);
-            # return array_intersect_key($this->languages, array_flip($langs));
         }
 
         return $available;
@@ -182,7 +208,10 @@ trait TranslatableTrait
             $this->languages[$lang->ident()] = $lang;
         } else {
             throw new InvalidArgumentException(
-                'Must be a string-cast language code, an array, or an instance of LanguageInterface.'
+                sprintf(
+                    'Must be a string-cast language code or an instance of LanguageInterface, received %s',
+                    (is_object($lang) ? get_class($lang) : gettype($lang))
+                )
             );
         }
 
@@ -204,7 +233,10 @@ trait TranslatableTrait
 
         if (!is_string($lang)) {
             throw new InvalidArgumentException(
-                'Must be a string-cast language code or an instance of LanguageInterface.'
+                sprintf(
+                    'Invalid language, received %s',
+                    (is_object($lang) ? get_class($lang) : gettype($lang))
+                )
             );
         }
 
@@ -246,7 +278,10 @@ trait TranslatableTrait
 
         if (!is_string($lang)) {
             throw new InvalidArgumentException(
-                'Must be a string-cast language code or an instance of LanguageInterface.'
+                sprintf(
+                    'Invalid language, received %s',
+                    (is_object($lang) ? get_class($lang) : gettype($lang))
+                )
             );
         }
 
@@ -289,11 +324,14 @@ trait TranslatableTrait
                 $this->defaultLanguage = $lang;
             } else {
                 throw new InvalidArgumentException(
-                    sprintf('Invalid language: "%s"', (string)$lang)
+                    sprintf(
+                        'Invalid language, received %s',
+                        (is_object($lang) ? get_class($lang) : gettype($lang))
+                    )
                 );
             }
         } else {
-            $languages = $this->languages();
+            $languages = $this->availableLanguages();
             $this->defaultLanguage = reset($languages);
         }
 
@@ -339,7 +377,10 @@ trait TranslatableTrait
                 $this->currentLanguage = $lang;
             } else {
                 throw new InvalidArgumentException(
-                    sprintf('Invalid language: "%s"', (string)$lang)
+                    sprintf(
+                        'Invalid language, received %s',
+                        (is_object($lang) ? get_class($lang) : gettype($lang))
+                    )
                 );
             }
         } else {

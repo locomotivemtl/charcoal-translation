@@ -34,7 +34,7 @@ trait MultilingualAwareTrait
      */
     public function isMultilingual()
     {
-        return ($this->languages() > 1);
+        return ($this->availableLanguages() > 1);
     }
 
     /**

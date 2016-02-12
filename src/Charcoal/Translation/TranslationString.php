@@ -101,7 +101,7 @@ class TranslationString implements
     {
         unset($args);
 
-        if (in_array($method, $this->languages())) {
+        if (in_array($method, $this->availableLanguages())) {
             return $this->val($method);
         } else {
             throw new Exception(

@@ -127,8 +127,8 @@ class Language implements LanguageInterface
             $config = $name->languages();
         } elseif (is_array($name)) {
             $config = [
-                'languages'       => array_keys($name),
-                'defaultLanguage' => $this->ident()
+                'languages'        => array_keys($name),
+                'default_language' => $this->ident()
             ];
         } else {
             $config = null;

@@ -184,13 +184,13 @@ class LanguageManager extends AbstractManager implements
                     }
                 }
 
-                foreach ($this->languages() as $langCode) {
+                foreach ($this->availableLanguages() as $langCode) {
                     $exts = [ 'ini', 'json', 'php' ];
                     while ($exts) {
                         $ext = array_pop($exts);
                         $cfg = sprintf('%1$s/messages.%2$s.%3$s', $path, $langCode, $ext);
 
-                        if ( file_exists($cfg) ) {
+                        if (file_exists($cfg)) {
                             $loader->addFile($cfg);
                         }
                     }
@@ -310,5 +310,65 @@ class LanguageManager extends AbstractManager implements
         }
 
         return [];
+    }
+
+    /**
+     * Set the application's current language.
+     *
+     * Must be one of the available languages assigned to the config.
+     *
+     * This method sets the environment's locale.
+     *
+     * @uses   ConfigurableTranslationTrait::setCurrentLanguage()
+     * @param  LanguageInterface|string|null $lang A language object or identifier.
+     * @return MultilingualAwareInterface Chainable
+     */
+    public function setCurrentLanguage($lang = null)
+    {
+        $this->config()->setCurrentLanguage($lang);
+        $this->setCurrentLocale();
+
+        return $this;
+    }
+
+    /**
+     * Set the application's current language.
+     *
+     * Must be one of the available languages assigned to the config.
+     *
+     * This method sets the environment's locale.
+     *
+     * @uses   ConfigurableTranslationTrait::setCurrentLanguage()
+     * @return MultilingualAwareInterface Chainable
+     */
+    public function setCurrentLocale()
+    {
+        $current  = $this->currentLanguage();
+        $fallback = $this->defaultLanguage();
+
+        $locales   = [ LC_ALL ];
+        $languages = [ $current ];
+
+        if ($current !== $fallback) {
+            $languages[] = $fallback;
+        }
+
+        foreach ($languages as $code) {
+            $language = $this->language($code);
+
+            if ($language instanceof Language) {
+                $locale = ($language->locale() ?: $language->code());
+
+                if ($locale) {
+                    $locales[] = $locale;
+                }
+            }
+        }
+
+        if (count($locales) > 1) {
+            call_user_func_array('setlocale', $locales);
+        }
+
+        return $this;
     }
 }

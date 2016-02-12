@@ -15,28 +15,40 @@ class FileLoader
     private $searchPath = [];
 
     /**
-     * @var string $path
-     */
-    private $path;
-
-    /**
      * @var string $ident
      */
     private $ident;
 
     /**
-     * @param string $ident
-     * @throws InvalidArgumentException if the ident is not a string
+     * Set the loader's identifier.
+     *
+     * @param  mixed $ident A subset of language identifiers.
+     * @throws InvalidArgumentException If the ident is invalid.
      * @return FileLoader Chainable
      */
     public function setIdent($ident)
     {
+        if (is_array($ident)) {
+            if (count($ident)) {
+                sort($ident);
+                $ident = implode(',', $ident);
+            } else {
+                $ident = 'all';
+            }
+        }
+
         if (!is_string($ident)) {
             throw new InvalidArgumentException(
-                __CLASS__.'::'.__FUNCTION__.'() - Ident must be a string.'
+                sprintf(
+                    '%1$s::%2$s() — Identifier must be a string.',
+                    __CLASS__,
+                    __FUNCTION__
+                )
             );
         }
+
         $this->ident = $ident;
+
         return $this;
     }
 
@@ -46,31 +58,6 @@ class FileLoader
     public function ident()
     {
         return $this->ident;
-    }
-
-    /**
-     * @param string $path
-     * @throws InvalidArgumentException
-     * @return FileLoader Chainable
-     */
-    public function setPath($path)
-    {
-        if (!is_string($path)) {
-            throw new InvalidArgumentException('setPath() expects a string.');
-        }
-        $this->path = $path;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function path()
-    {
-        if (!$this->path) {
-            return '';
-        }
-        return $this->path;
     }
 
     /**
@@ -165,7 +152,57 @@ class FileLoader
     }
 
     /**
-     * @param string $path
+     * Get the object's search path, merged with global configuration path
+     * @return array
+     */
+    public function searchPath()
+    {
+        return $this->searchPath;
+    }
+
+    /**
+     * Alias of {@see FileLoader::searchPath()}
+     *
+     * @return string[]
+     */
+    public function paths()
+    {
+        return $this->searchPath();
+    }
+
+    /**
+     * Assign a list of paths.
+     *
+     * @param  string[] $paths The list of paths to add.
+     * @return self
+     */
+    public function setPaths(array $paths)
+    {
+        $this->searchPath = [];
+        $this->addPaths($paths);
+
+        return $this;
+    }
+
+    /**
+     * Append a list of paths.
+     *
+     * @param  string[] $paths The list of paths to add.
+     * @return self
+     */
+    public function addPaths(array $paths)
+    {
+        foreach ($paths as $path) {
+            $this->addPath($path);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Append a path.
+     *
+     * @param  string $path A file or directory path.
      * @throws InvalidArgumentException if the path does not exist or is invalid
      * @return \Charcoal\Service\Loader\Metadata (Chainable)
      */
@@ -176,28 +213,15 @@ class FileLoader
                 'Path should be a string.'
             );
         }
+
         if (!file_exists($path)) {
             throw new InvalidArgumentException(
                 sprintf('Path does not exist: "%s"', $path)
-            );
-        }
-        if (!is_dir($path)) {
-            throw new InvalidArgumentException(
-                sprintf('Path is not a directory: "%s"', $path)
             );
         }
 
         $this->searchPath[] = $path;
 
         return $this;
-    }
-
-    /**
-     * Get the object's search path, merged with global configuration path
-     * @return array
-     */
-    public function searchPath()
-    {
-        return $this->searchPath;
     }
 }

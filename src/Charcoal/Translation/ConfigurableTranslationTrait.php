@@ -44,6 +44,22 @@ trait ConfigurableTranslationTrait
     }
 
     /**
+     * Retrieve a filterable list of the object's available languages.
+     *
+     * By default, only language identifiers are returned.
+     *
+     * @uses   ConfigurableInterface::config()
+     * @param  (LanguageInterface|string)[] $langs
+     *     If an array of one or more lanagues is provided, the method returns
+     *     a subset of the config's available languages (if any).
+     * @return array An array of available languages.
+     */
+    public function languages(array $langs = [])
+    {
+        return $this->config()->languages($langs);
+    }
+
+    /**
      * Retrieve a filterable list of the object's available language identifiers.
      *
      * By default, only language identifiers are returned.
@@ -54,9 +70,9 @@ trait ConfigurableTranslationTrait
      *     a subset of the config's available languages (if any).
      * @return array An array of available language identifiers.
      */
-    public function languages(array $langs = [])
+    public function availableLanguages(array $langs = [])
     {
-        return $this->config()->languages($langs);
+        return $this->config()->availableLanguages($langs);
     }
 
     /**
