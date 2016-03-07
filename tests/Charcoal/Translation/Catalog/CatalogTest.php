@@ -3,7 +3,7 @@
 namespace Charcoal\Tests\Translation;
 
 // Local Dependencies
-use \Charcoal\Translation\Catalog;
+use \Charcoal\Translation\Catalog\Catalog;
 use \Charcoal\Translation\TranslationString;
 
 class CatalogTest extends \PHPUnit_Framework_TestCase
