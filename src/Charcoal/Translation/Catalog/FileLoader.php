@@ -4,27 +4,77 @@ namespace Charcoal\Translation\Catalog;
 
 use \InvalidArgumentException;
 
+use \Psr\Log\LoggerAwareInterface;
+use \Psr\Log\LoggerAwareTrait;
+
 /**
- *
+ * Base file loader.
  */
-class FileLoader
+class FileLoader implements
+    LoggerAwareInterface
 {
-    /**
-     * @var array $searchPath
-     */
-    private $searchPath = [];
+    use LoggerAwareTrait;
 
     /**
+     * The base path to prepend to any relative paths to search in.
+     *
+     * @var string $basePath
+     */
+    private $basePath = '';
+
+    /**
+     * The paths to search in.
+     *
+     * @var string $paths
+     */
+    private $paths = [];
+
+    /**
+     * The loader's identifier (for caching found paths).
+     *
      * @var string $ident
      */
     private $ident;
+
+    /**
+     * Default constructor, if none is provided by the concrete class implementations.
+     *
+     * ## Required dependencies
+     * - `logger` A PSR-3 logger
+     *
+     * @param array $data The class dependencies map.
+     */
+    final public function __construct(array $data = null)
+    {
+        if (isset($data['logger'])) {
+            $this->setLogger($data['logger']);
+        }
+
+        if (isset($data['base_path'])) {
+            $this->setBasePath($data['base_path']);
+        }
+
+        if (isset($data['paths'])) {
+            $this->setPaths($data['paths']);
+        }
+    }
+
+    /**
+     * Retrieve the loader's identifier.
+     *
+     * @return string
+     */
+    public function ident()
+    {
+        return $this->ident;
+    }
 
     /**
      * Set the loader's identifier.
      *
      * @param  mixed $ident A subset of language identifiers.
      * @throws InvalidArgumentException If the ident is invalid.
-     * @return FileLoader Chainable
+     * @return self
      */
     public function setIdent($ident)
     {
@@ -53,17 +103,41 @@ class FileLoader
     }
 
     /**
+     * Retrieve the base path for relative search paths.
+     *
      * @return string
      */
-    public function ident()
+    public function basePath()
     {
-        return $this->ident;
+        return $this->basePath;
+    }
+
+    /**
+     * Assign a base path for relative search paths.
+     *
+     * @param  string $basePath The base path to use.
+     * @throws InvalidArgumentException if the base path parameter is not a string.
+     * @return self
+     */
+    public function setBasePath($basePath)
+    {
+        if (!is_string($basePath)) {
+            throw new InvalidArgumentException(
+                'Base path must be a string'
+            );
+        }
+
+        $basePath = realpath($basePath);
+
+        $this->basePath = rtrim($basePath, '/\\').DIRECTORY_SEPARATOR;
+
+        return $this;
     }
 
     /**
      * Returns the content of the first file found in search path
      *
-     * @param string|null $ident
+     * @param  string|null $ident
      * @return string File content
      */
     public function load($ident = null)
@@ -88,11 +162,11 @@ class FileLoader
      */
     protected function loadFirstFromSearchPath($filename)
     {
-        $searchPath = $this->searchPath();
-        if (empty($searchPath)) {
+        $paths = $this->paths();
+        if (empty($paths)) {
             return null;
         }
-        foreach ($searchPath as $path) {
+        foreach ($paths as $path) {
             $f = $path.DIRECTORY_SEPARATOR.$filename;
             if (file_exists($f)) {
                 $fileContent = file_get_contents($f);
@@ -112,11 +186,11 @@ class FileLoader
         if (file_exists($filename)) {
             return $filename;
         }
-        $searchPath = $this->searchPath();
-        if (empty($searchPath)) {
+        $paths = $this->paths();
+        if (empty($paths)) {
             return null;
         }
-        foreach ($searchPath as $path) {
+        foreach ($paths as $path) {
             $f = $path.DIRECTORY_SEPARATOR.$filename;
             if (file_exists($f)) {
                 return $f;
@@ -137,11 +211,11 @@ class FileLoader
             $ret[] = $filename;
         }
 
-        $searchPath = $this->searchPath();
-        if (empty($searchPath)) {
+        $paths = $this->paths();
+        if (empty($paths)) {
             return $ret;
         }
-        foreach ($searchPath as $path) {
+        foreach ($paths as $path) {
             $f = $path.DIRECTORY_SEPARATOR.$filename;
             if (file_exists($f)) {
                 $ret[] = $f;
@@ -152,22 +226,13 @@ class FileLoader
     }
 
     /**
-     * Get the object's search path, merged with global configuration path
-     * @return array
-     */
-    public function searchPath()
-    {
-        return $this->searchPath;
-    }
-
-    /**
-     * Alias of {@see FileLoader::searchPath()}
+     * Retrieve the searchable paths.
      *
      * @return string[]
      */
     public function paths()
     {
-        return $this->searchPath();
+        return $this->paths;
     }
 
     /**
@@ -178,7 +243,7 @@ class FileLoader
      */
     public function setPaths(array $paths)
     {
-        $this->searchPath = [];
+        $this->paths = [];
         $this->addPaths($paths);
 
         return $this;
@@ -204,7 +269,7 @@ class FileLoader
      *
      * @param  string $path A file or directory path.
      * @throws InvalidArgumentException if the path does not exist or is invalid
-     * @return \Charcoal\Service\Loader\Metadata (Chainable)
+     * @return self
      */
     public function addPath($path)
     {
@@ -220,8 +285,46 @@ class FileLoader
             );
         }
 
-        $this->searchPath[] = $path;
+        $this->paths[] = $this->resolvePath($path);
 
         return $this;
+    }
+
+    /**
+     * Prepend a path.
+     *
+     * @param  string $path A file or directory path.
+     * @return self
+     */
+    public function prependPath($path)
+    {
+        $path = $this->resolvePath($path);
+        array_unshift($this->paths, $path);
+
+        return $this;
+    }
+
+    /**
+     * @param string $path The path to resolve.
+     * @throws InvalidArgumentException If the path argument is not a string.
+     * @return string
+     */
+    public function resolvePath($path)
+    {
+        if (!is_string($path)) {
+            throw new InvalidArgumentException(
+                'Path needs to be a string'
+            );
+        }
+
+        $basePath = $this->basePath();
+
+        $path = ltrim($path, '/\\');
+
+        if ($basePath && strpos($path, $basePath) === false) {
+            $path = $basePath.$path;
+        }
+
+        return $path;
     }
 }

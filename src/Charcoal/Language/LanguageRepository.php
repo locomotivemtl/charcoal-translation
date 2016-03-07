@@ -13,10 +13,7 @@ use \Charcoal\Language\LanguageInterface;
 use \Charcoal\Translation\Catalog\FileLoader;
 
 /**
- * Load language metadata from JSON file(s).
- *
- * @todo Implement {@see \Charcoal\Loader\FileLoader} as a trait; mixed with {@see \Charcoal\View\AbstractLoader}.
- * @todo Overhaul class to extend {@see \Charcoal\Factory\AbstractFactory}.
+ * Load language metadata from JSON file(s)
  */
 class LanguageRepository extends FileLoader
 {
@@ -42,6 +39,8 @@ class LanguageRepository extends FileLoader
      */
     public function setDependencies(Container $container)
     {
+        $this->setBasePath($container['config']['ROOT']);
+
         $this->cache = $container['cache'];
 
         return $this;
@@ -78,6 +77,7 @@ class LanguageRepository extends FileLoader
      * Create one or more new instances of LanguageInterface.
      *
      * @param  array $langs A list of language identifiers to create.
+     * @throws InvalidArgumentException If no languages are passed.
      * @return LanguageInterface[]
      * @todo   Implement Factory
      */
@@ -146,23 +146,18 @@ class LanguageRepository extends FileLoader
      * Load the metadata from JSON files.
      *
      * @return array
-     * @todo   Add support for directories.
+     * @todo   [mcaskill 2016-02-11] Add support for directories.
      */
     public function loadFromRepositories()
     {
-        $searchPaths = $this->paths();
+        $paths = $this->paths();
 
-        if (empty($searchPaths)) {
+        if (empty($paths)) {
             return null;
         }
 
         $languages = [];
-        foreach ($searchPaths as $path) {
-            /*if (is_dir($path)) {
-                $dir  = rtrim($path, '/');
-                $path = $dir.'/'.$lang;
-            }*/
-
+        foreach ($paths as $path) {
             $data = $this->loadRepository($path);
 
             if (is_array($data)) {
