@@ -39,7 +39,6 @@ trait TranslatableTrait
     /**
      * List of language codes to use as fallbacks for the current language.
      *
-     * @todo Implement fallback languages to replace self::$defaultLanguage
      * @var  string[]
      */
     protected $fallbackLanguages = [];
@@ -47,7 +46,6 @@ trait TranslatableTrait
     /**
      * Fallback language identifier.
      *
-     * @deprecated in favor of self::$fallbackLanguages
      * @var string
      */
     protected $defaultLanguage;
@@ -74,17 +72,11 @@ trait TranslatableTrait
     public function resolveSpecialLanguages()
     {
         if (count($this->languages)) {
-            if (
-                !isset($this->defaultLanguage) ||
-                !array_key_exists($this->defaultLanguage, $this->languages)
-            ) {
+            if (!isset($this->defaultLanguage) || !array_key_exists($this->defaultLanguage, $this->languages)) {
                 $this->setDefaultLanguage();
             }
 
-            if (
-                !isset($this->currentLanguage) ||
-                !array_key_exists($this->currentLanguage, $this->languages)
-            ) {
+            if (!isset($this->currentLanguage) || !array_key_exists($this->currentLanguage, $this->languages)) {
                 $this->setCurrentLanguage();
             }
         }
@@ -270,6 +262,7 @@ trait TranslatableTrait
      * Determine if the object has a specified language.
      *
      * @param  LanguageInterface|string $lang A language object or identifier.
+     * @throws InvalidArgumentException If language is invalid.
      * @return boolean Whether the language is available
      */
     public function hasLanguage($lang)
@@ -294,6 +287,7 @@ trait TranslatableTrait
      * The default language acts as a fallback when the current language
      * is not available. This is especially useful when dealing with translations.
      *
+     * @todo   Replace with `self::fallbackLanguages()`
      * @return string A language identifier.
      */
     public function defaultLanguage()
@@ -311,9 +305,8 @@ trait TranslatableTrait
      * Must be one of the available languages assigned to the object.
      *
      * @param  LanguageInterface|string|null $lang A language object or identifier.
+     * @throws InvalidArgumentException If language is invalid.
      * @return MultilingualAwareInterface Chainable
-     *
-     * @throws InvalidArgumentException if language isn't available
      */
     public function setDefaultLanguage($lang = null)
     {
@@ -364,9 +357,8 @@ trait TranslatableTrait
      * (which falls onto the default language).
      *
      * @param  LanguageInterface|string|null $lang A language object or identifier.
+     * @throws InvalidArgumentException If language is invalid.
      * @return MultilingualAwareInterface Chainable
-     *
-     * @throws InvalidArgumentException If language isn't available.
      */
     public function setCurrentLanguage($lang = null)
     {

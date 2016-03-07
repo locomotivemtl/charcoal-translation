@@ -31,7 +31,7 @@ use \Charcoal\Translation\TranslationStringInterface;
  * • `self::currentLanguage()` → `self::$currentLanguage`
  * • `self::setCurrentLanguage()` → `self::$currentLanguage`
  *
- * @see TranslationString for a similar exception for the current language.
+ * The {@see \Charcoal\Translation\TranslationString} class features a similar special-use for the current language.
  */
 class Catalog implements
     CatalogInterface,

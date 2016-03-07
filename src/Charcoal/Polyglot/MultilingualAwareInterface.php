@@ -104,6 +104,7 @@ interface MultilingualAwareInterface
      * The default language acts as a fallback when the current language
      * is not available. This is especially useful when dealing with translations.
      *
+     * @todo   [mcaskill 2016-02-11] Replace with `self::fallbackLanguages()`
      * @return string A language identifier.
      */
     public function defaultLanguage();

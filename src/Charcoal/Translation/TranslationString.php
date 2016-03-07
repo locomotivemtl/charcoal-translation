@@ -33,7 +33,7 @@ use \Charcoal\Translation\TranslationStringInterface;
  * • `self::currentLanguage()` → `self::$currentLanguage`
  * • `self::setCurrentLanguage()` → `self::$currentLanguage`
  *
- * @see \Charcoal\Translation\Catalog for a similar exception for the current language.
+ * The {@see \Charcoal\Translation\Catalog\Catalog} class features a similar special-use for the current language.
  */
 class TranslationString implements
     JsonSerializable,

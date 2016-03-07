@@ -22,7 +22,6 @@ class TranslationConfig extends AbstractConfig implements MultilingualAwareInter
      * Store a global, reusable, instance of TranslationConfig.
      *
      * @var TranslationConfig
-     * @todo Do not use this.
      */
     private static $globalInstance;
 
@@ -48,6 +47,7 @@ class TranslationConfig extends AbstractConfig implements MultilingualAwareInter
     /**
      * Assign a global instance of TranslationConfig for sharing a locale setup.
      *
+     * @todo   [mcaskill 2015-12-07] This method must be replaced with equivalence in app Container.
      * @param  TranslationConfig $config A TranslationConfig instance.
      * @return void
      */
@@ -61,8 +61,9 @@ class TranslationConfig extends AbstractConfig implements MultilingualAwareInter
      *
      * @see    AbstractSource::addFilter() Similar implementation.
      * @see    AbstractProperty::fields() Similar implementation.
-     *
      * @see    ConfigurableInterface::createConfig() Similar method.
+     *
+     * @todo   This method needs to be deprecated.
      * @param  array|string|null $data Optional data to pass to the new TranslationConfig instance.
      * @return TranslationConfig
      */

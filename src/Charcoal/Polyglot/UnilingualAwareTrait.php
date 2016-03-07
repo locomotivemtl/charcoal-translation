@@ -45,6 +45,7 @@ trait UnilingualAwareTrait
      * Assign a language to the object.
      *
      * @param  string|LanguageInterface $lang A language object or identifier.
+     * @throws InvalidArgumentException If language is invalid.
      * @return self
      */
     public function setLanguage($lang)
