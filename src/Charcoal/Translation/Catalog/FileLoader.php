@@ -279,13 +279,15 @@ class FileLoader implements
             );
         }
 
+        $path = $this->resolvePath($path);
+
         if (!file_exists($path)) {
             throw new InvalidArgumentException(
                 sprintf('Path does not exist: "%s"', $path)
             );
         }
 
-        $this->paths[] = $this->resolvePath($path);
+        $this->paths[] = $path;
 
         return $this;
     }
@@ -299,6 +301,13 @@ class FileLoader implements
     public function prependPath($path)
     {
         $path = $this->resolvePath($path);
+
+        if (!file_exists($path)) {
+            throw new InvalidArgumentException(
+                sprintf('Path does not exist: "%s"', $path)
+            );
+        }
+
         array_unshift($this->paths, $path);
 
         return $this;
