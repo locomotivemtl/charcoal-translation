@@ -173,7 +173,10 @@ class TranslationString implements
 
         if (!is_string($lang)) {
             throw new InvalidArgumentException(
-                'Language code must be a string or an instance of LanguageInterface.'
+                sprintf(
+                    'Invalid language, received %s',
+                    (is_object($lang) ? get_class($lang) : gettype($lang))
+                )
             );
         }
 
@@ -199,7 +202,10 @@ class TranslationString implements
 
         if (!is_string($lang)) {
             throw new InvalidArgumentException(
-                'Must be a string-cast language code or an instance of LanguageInterface.'
+                sprintf(
+                    'Invalid language, received %s',
+                    (is_object($lang) ? get_class($lang) : gettype($lang))
+                )
             );
         }
 
@@ -228,7 +234,12 @@ class TranslationString implements
         if ($lang === null) {
             $lang = $this->currentLanguage();
         } elseif (!$this->hasLanguage($lang)) {
-            throw new InvalidArgumentException(sprintf('Invalid language: "%s"', (string)$lang));
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Invalid language, received %s',
+                    (is_object($lang) ? get_class($lang) : gettype($lang))
+                )
+            );
         }
 
         if ($this->hasVal($lang)) {
@@ -263,7 +274,10 @@ class TranslationString implements
 
             if (!is_string($lang)) {
                 throw new InvalidArgumentException(
-                    'Must be a string-cast language code or an instance of LanguageInterface.'
+                    sprintf(
+                        'Invalid language, received %s',
+                        (is_object($lang) ? get_class($lang) : gettype($lang))
+                    )
                 );
             }
         }
