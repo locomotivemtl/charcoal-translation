@@ -39,7 +39,7 @@ class LanguageRepository extends FileLoader
      */
     public function setDependencies(Container $container)
     {
-        $this->setBasePath($container['config']['ROOT']);
+        $this->setBasePath($container['config']['base_path']);
 
         $this->cache = $container['cache'];
 
