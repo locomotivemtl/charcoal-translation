@@ -7,10 +7,12 @@ use \InvalidArgumentException;
 // Dependency from 'Pimple'
 use \Pimple\Container;
 
+// Dependency from 'charcoal-core'
+use \Charcoal\Loader\FileLoader;
+
 // Local dependencies
 use \Charcoal\Language\Language;
 use \Charcoal\Language\LanguageInterface;
-use \Charcoal\Translation\Catalog\FileLoader;
 
 /**
  * Load language metadata from JSON file(s)
@@ -44,6 +46,27 @@ class LanguageRepository extends FileLoader
         $this->cache = $container['cache'];
 
         return $this;
+    }
+
+    /**
+     * Set the loader's identifier.
+     *
+     * @param  mixed $ident A subset of language identifiers.
+     * @throws InvalidArgumentException If the ident is invalid.
+     * @return self
+     */
+    public function setIdent($ident)
+    {
+        if (is_array($ident)) {
+            if (count($ident)) {
+                sort($ident);
+                $ident = implode(',', $ident);
+            } else {
+                $ident = 'all';
+            }
+        }
+
+        return parent::setIdent($ident);
     }
 
     /**
@@ -158,7 +181,7 @@ class LanguageRepository extends FileLoader
 
         $languages = [];
         foreach ($paths as $path) {
-            $data = $this->loadRepository($path);
+            $data = $this->loadJsonFile($path);
 
             if (is_array($data)) {
                 // Resolve any sub-lists
@@ -173,55 +196,5 @@ class LanguageRepository extends FileLoader
         }
 
         return $languages;
-    }
-
-    /**
-     * Load the contents of the provided JSON file.
-     *
-     * @param  mixed $filename The file path to retrieve.
-     * @throws InvalidArgumentException If a JSON decoding error occurs.
-     * @return array|null
-     */
-    private function loadRepository($filename)
-    {
-        $content = file_get_contents($filename);
-
-        if ($content === null) {
-            return null;
-        }
-
-        $data  = json_decode($content, true);
-        $error = json_last_error();
-
-        if ($error == JSON_ERROR_NONE) {
-            return $data;
-        }
-
-        switch ($error) {
-            case JSON_ERROR_NONE:
-                break;
-            case JSON_ERROR_DEPTH:
-                $issue = 'Maximum stack depth exceeded';
-                break;
-            case JSON_ERROR_STATE_MISMATCH:
-                $issue = 'Underflow or the modes mismatch';
-                break;
-            case JSON_ERROR_CTRL_CHAR:
-                $issue = 'Unexpected control character found';
-                break;
-            case JSON_ERROR_SYNTAX:
-                $issue = 'Syntax error, malformed JSON';
-                break;
-            case JSON_ERROR_UTF8:
-                $issue = 'Malformed UTF-8 characters, possibly incorrectly encoded';
-                break;
-            default:
-                $issue = 'Unknown error';
-                break;
-        }
-
-        throw new InvalidArgumentException(
-            sprintf('JSON %s could not be parsed: "%s"', $filename, $issue)
-        );
     }
 }
