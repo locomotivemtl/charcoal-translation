@@ -71,6 +71,8 @@
     <!-- @todo Doc me -->
     <!--<rule ref="PEAR.Commenting.FileComment.Missing" />-->
     <!-- @todo Doc me -->
+    <!--<rule ref="PEAR.Commenting.ClassComment" />-->
+    <!-- @todo Doc me -->
     <!--<rule ref="PEAR.Commenting.FunctionComment.Missing" />-->
     <!-- Block comments should be used appropriately -->
     <!--<rule ref="Squiz.Commenting.BlockComment" />-->
@@ -83,7 +85,11 @@
     <!-- File comment blocks -->
     <!--<rule ref="Squiz.Commenting.FileComment" />-->
     <!-- Function comment blocks -->
-    <!--<rule ref="Squiz.Commenting.FunctionComment" />-->
+    <rule ref="Squiz.Commenting.FunctionComment" />
+    <!-- Do not test scalar typehint (php-7 only feature) -->
+    <rule ref="Squiz.Commenting.FunctionComment.ScalarTypeHintMissing">
+        <severity>0</severity>
+    </rule>
     <!-- Verifies that a @throws tag exists for a function that throws exceptions -->
     <rule ref="Squiz.Commenting.FunctionCommentThrowTag" />
     <!-- Checks that there is adequate spacing between comments -->
@@ -108,12 +114,7 @@
     <!-- Verifies that there is a space between each condition of FOR loops -->
     <rule ref="Squiz.ControlStructures.ForLoopDeclaration" />
     <!-- Tests the spacing of shorthand IF statements -->
-    <rule ref="Squiz.ControlStructures.InlineIfDeclaration" />
-    <!-- Allow inline shorthand IF statements to be declared on multiple lines -->
-    <rule ref="Squiz.ControlStructures.InlineIfDeclaration.NotSingleLine">
-        <!-- This returns false-positive; hide them -->
-        <severity>0</severity>
-    </rule>
+    <!-- <rule ref="Squiz.ControlStructures.InlineIfDeclaration" />-->
     <!-- Ensures all control structure keywords are lowercase -->
     <rule ref="Squiz.ControlStructures.LowercaseDeclaration" />
     <!--<rule ref="Squiz.ControlStructures.SwitchDeclaration" />-->
@@ -217,7 +218,9 @@
 <!-- Objects Sniffs -->
 
     <!-- Ensures objects are assigned to a variable when instantiated. -->
-    <rule ref="Squiz.Objects.ObjectInstantiation" />
+    <rule ref="Squiz.Objects.ObjectInstantiation">
+        <exclude name="Squiz.Objects.ObjectInstantiation.NotAssigned" />
+    </rule>
 
 <!-- Operators Sniffs -->
 
