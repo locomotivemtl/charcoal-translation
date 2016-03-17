@@ -65,7 +65,7 @@ class TranslationString implements
     /**
      * Calling the constructor with a parameter should force setting it up as value.
      *
-     * @param  mixed                   $val One or more strings (as an array).
+     * @param  mixed                   $val    One or more strings (as an array).
      * @param  TranslationConfig|array $config An existing TranslationConfig or settings to apply to this instance.
      * @return self
      */
@@ -94,6 +94,7 @@ class TranslationString implements
      * ```
      *
      * @param  string $method A language for an available translation.
+     * @param  mixed  $args   Extra arguments (unused).
      * @return string A translated string.
      * @throws Exception If language isn't available.
      */
@@ -126,7 +127,7 @@ class TranslationString implements
     /**
      * Assign the current translation value(s).
      *
-     * @param TranslationStringInterface|array|string $val
+     * @param TranslationStringInterface|array|string $val The translation value(s).
      *     Add one or more translation values.
      *
      *     Accept 3 types of arguments:
@@ -311,9 +312,10 @@ class TranslationString implements
     /**
      * Get an array of translations in either all languages or a select few.
      *
-     * @param  (LanguageInterface|string)[] $langs
-     *     If an array of one or more lanagues is provided, the method returns
-     *     a subset of the object's available languages (if any).
+     * If an array of one or more lanagues is provided, the metahod returns
+     * a subset of the object's available languages (if any).
+     *
+     * @param  (LanguageInterface|string)[] $langs Optional language(s) filters.
      * @return (LanguageInterface|string)[] An array of available languages.
      */
     public function translations(array $langs = [])

@@ -86,10 +86,10 @@ class LanguageRepository extends FileLoader
     /**
      * Assign the LanguageInterface model.
      *
-     * @param  LanguageInterface $source
+     * @param  LanguageInterface $source Repository source.
      * @return self
      */
-    public function setSource($source)
+    public function setSource(LanguageInterface $source)
     {
         $this->source = $source;
 

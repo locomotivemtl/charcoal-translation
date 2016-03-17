@@ -60,7 +60,7 @@ class Catalog implements
      * Calling the constructor with a parameter should force setting it up as value.
      *
      * @param  mixed[]                 $entries An array of entries, each composed of translations.
-     * @param  TranslationConfig|array $config
+     * @param  TranslationConfig|array $config  The catalog config.
      * @return self
      */
     public function __construct(array $entries = null, $config = null)
@@ -79,8 +79,8 @@ class Catalog implements
     /**
      * Add a translation resource to the catalog.
      *
-     * @param  ResourceInterface|array|string  $resource
-     * @throws InvalidArgumentException
+     * @param  ResourceInterface|array|string $resource The resource.
+     * @throws InvalidArgumentException If the resource is not an array.
      * @return self
      * @todo   Implement handling of a ResourceInterface instance.
      */
@@ -105,12 +105,12 @@ class Catalog implements
      * Defaults to retrieving all entry identifiers.
      * Optionally, the list can be filtered by a language code.
      *
-     * @param  LanguageInterface|string  $lang {
-     *     If a language code is provided, the method returns
-     *     a subset of entries in the specified language.
-     * }
+     * If a language code is provided, the method returns
+     * a subset of entries in the specified language.
+     *
+     * @param  LanguageInterface|string $lang Optional language code.
      * @return array
-     * @throws InvalidArgumentException if language is invalid
+     * @throws InvalidArgumentException If language is invalid.
      */
     public function entries($lang = null)
     {
@@ -138,12 +138,11 @@ class Catalog implements
     /**
      * Set the array of entries and their translations
      *
-     * @param  mixed[]  $entries {
-     *     An array of zero or more entries to set the catalog.
+     * If an empty array is provided, the method should consider this a request
+     * to empty the entries store.
      *
-     *     If an empty array is provided, the method should consider this a request
-     *     to empty the entries store.
-     * }
+     * @param  mixed[] $entries An array of zero or more entries to set the catalog.
+     *
      * @return self
      */
     public function setEntries(array $entries = [])
@@ -162,9 +161,9 @@ class Catalog implements
     /**
      * Get an entry in the catalog
      *
-     * @param  string  $ident  An entry's key
+     * @param  string $ident An entry's key.
      * @return TranslationString
-     * @throws InvalidArgumentException if the idenfitier isn't a string
+     * @throws InvalidArgumentException If the idenfitier isn't a string.
      */
     public function entry($ident)
     {
@@ -180,9 +179,9 @@ class Catalog implements
     /**
      * Determine if the catalog has a specified entry
      *
-     * @param  string  $ident  An entry's key
+     * @param  string $ident An entry's key.
      * @return boolean
-     * @throws InvalidArgumentException if the idenfitier isn't a string
+     * @throws InvalidArgumentException If the idenfitier isn't a string.
      */
     public function hasEntry($ident)
     {
@@ -200,10 +199,10 @@ class Catalog implements
      *
      * This method will replace an existing entry.
      *
-     * @param  string                            $ident         A unique key for this entry
-     * @param  TranslationStringInterface|array  $translations  A set of translations
+     * @param  string                           $ident        A unique key for this entry.
+     * @param  TranslationStringInterface|array $translations A set of translations.
      * @return self
-     * @throws InvalidArgumentException if the idenfitier isn't a string
+     * @throws InvalidArgumentException If the idenfitier isn't a string.
      */
     public function addEntry($ident, $translations = null)
     {
@@ -248,9 +247,9 @@ class Catalog implements
     /**
      * Remove an entry from the catalog
      *
-     * @param  string  $ident  An entry's key
+     * @param  string $ident An entry's key.
      * @return self
-     * @throws InvalidArgumentException if the idenfitier isn't a string
+     * @throws InvalidArgumentException If the idenfitier isn't a string.
      */
     public function removeEntry($ident)
     {
@@ -263,16 +262,18 @@ class Catalog implements
         if ($this->hasEntry($ident)) {
             unset($this->entries[$ident]);
         }
+
+        return $this;
     }
 
     /**
      * Add a translation to an entry in the catalog
      *
-     * @param  string                    $ident  An entry's key
-     * @param  LanguageInterface|string  $lang   A language object or identifier
-     * @param  string                    $val    The translation to be added
+     * @param  string                   $ident An entry's key.
+     * @param  LanguageInterface|string $lang  A language object or identifier.
+     * @param  string                   $val   The translation to be added.
      * @return self
-     * @throws InvalidArgumentException if entry key, entry value, or language is invalid
+     * @throws InvalidArgumentException If entry key, entry value, or language is invalid.
      */
     public function addEntryTranslation($ident, $lang, $val)
     {
@@ -300,15 +301,16 @@ class Catalog implements
                 ]
             );
         }
+        return $this;
     }
 
     /**
      * Remove a translation from an entry in the catalog
      *
-     * @param  string                    $ident  An entry's key
-     * @param  LanguageInterface|string  $lang   A language object or identifier
+     * @param  string                   $ident An entry's key.
+     * @param  LanguageInterface|string $lang  A language object or identifier.
      * @return self
-     * @throws InvalidArgumentException if the idenfitier isn't a string
+     * @throws InvalidArgumentException If the idenfitier isn't a string.
      */
     public function removeEntryTranslation($ident, $lang)
     {
@@ -323,15 +325,16 @@ class Catalog implements
 
             unset($this->entries[$ident][$lang]);
         }
+        return $this;
     }
 
     /**
      * Get a translation for an entry in the catalog
      *
-     * @param  string                    $ident  An entry's key
-     * @param  LanguageInterface|string  $lang   Optional. Defaults to the current language
+     * @param  string                   $ident An entry's key.
+     * @param  LanguageInterface|string $lang  Optional. Defaults to the current language.
      * @return string
-     * @throws InvalidArgumentException if entry key or language is invalid
+     * @throws InvalidArgumentException If entry key or language is invalid.
      */
     public function translate($ident, $lang = null)
     {
@@ -364,9 +367,9 @@ class Catalog implements
      * Called when using the objects as `isset($obj['foo'])`.
      *
      * @see    ArrayAccess::offsetExists()
-     * @param  string  $ident
+     * @param  string $ident The offset key / ident.
      * @return boolean
-     * @throws InvalidArgumentException if array key isn't a string
+     * @throws InvalidArgumentException If array key isn't a string.
      */
     public function offsetExists($ident)
     {
@@ -383,9 +386,9 @@ class Catalog implements
      * Alias of `self::translate()`
      *
      * @see    ArrayAccess::offsetGet()
-     * @param  string  $ident
+     * @param  string $ident The offset key / ident.
      * @return string
-     * @throws InvalidArgumentException if array key isn't a string
+     * @throws InvalidArgumentException If array key isn't a string.
      */
     public function offsetGet($ident)
     {
@@ -403,10 +406,10 @@ class Catalog implements
      * depending on value assigned.
      *
      * @see    ArrayAccess::offsetSet()
-     * @param  string  $ident
-     * @param  mixed   $val
+     * @param  string $ident The offset key /ident.
+     * @param  mixed  $value The value.
      * @return void
-     * @throws InvalidArgumentException if array key isn't a string
+     * @throws InvalidArgumentException If array key isn't a string.
      */
     public function offsetSet($ident, $value)
     {
@@ -435,9 +438,9 @@ class Catalog implements
      * Called when using `unset($obj['foo']);`.
      *
      * @see    ArrayAccess::offsetUnset()
-     * @param  string  $ident
+     * @param  string $ident The offset key / ident.
      * @return void
-     * @throws InvalidArgumentException if array key isn't a string
+     * @throws InvalidArgumentException If array key isn't a string.
      */
     public function offsetUnset($ident)
     {
@@ -488,10 +491,10 @@ class Catalog implements
      * (which might fall onto the default language).
      *
      * @see    TranslatableTrait::setCurrentLanguage()
-     * @param  LanguageInterface|string|null  $lang  A language object or identifier
+     * @param  LanguageInterface|string|null $lang A language object or identifier.
      * @return self
      *
-     * @throws InvalidArgumentException if language isn't available
+     * @throws InvalidArgumentException If language isn't available.
      */
     public function setCurrentLanguage($lang = null)
     {

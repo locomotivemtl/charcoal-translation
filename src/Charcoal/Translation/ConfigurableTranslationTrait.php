@@ -48,7 +48,7 @@ trait ConfigurableTranslationTrait
      * By default, only language identifiers are returned.
      *
      * @uses   ConfigurableInterface::config()
-     * @param  (LanguageInterface|string)[] $langs
+     * @param  (LanguageInterface|string)[] $langs Optional language(s) filters.
      *     If an array of one or more lanagues is provided, the method returns
      *     a subset of the config's available languages (if any).
      * @return array An array of available languages.
@@ -64,7 +64,7 @@ trait ConfigurableTranslationTrait
      * By default, only language identifiers are returned.
      *
      * @uses   ConfigurableInterface::config()
-     * @param  (LanguageInterface|string)[] $langs
+     * @param  (LanguageInterface|string)[] $langs Optional language(s) filters.
      *     If an array of one or more lanagues is provided, the method returns
      *     a subset of the config's available languages (if any).
      * @return array An array of available language identifiers.
@@ -83,7 +83,7 @@ trait ConfigurableTranslationTrait
      * is reset to NULL (which falls onto the default language).
      *
      * @uses   ConfigurableInterface::config()
-     * @param  (LanguageInterface|string)[] $langs
+     * @param  (LanguageInterface|string)[] $langs Optional language(s) filters.
      *     An array of zero or more language objects or language identifiers to set
      *     on the config.
      *

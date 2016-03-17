@@ -87,7 +87,7 @@ trait TranslatableTrait
     /**
      * Retrieve the object's list of available languages.
      *
-     * @param  (LanguageInterface|string)[] $langs
+     * @param  (LanguageInterface|string)[] $langs Optional language(s) filters.
      *     If an array of one or more lanagues is provided, the method returns
      *     a subset of the object's available languages (if any).
      * @return array An array of available languages
@@ -108,7 +108,7 @@ trait TranslatableTrait
     /**
      * Retrieve the object's list of available language identifiers.
      *
-     * @param  (LanguageInterface|string)[] $langs
+     * @param  (LanguageInterface|string)[] $langs Optional language(s) filters.
      *     If an array of one or more lanagues is provided, the method returns
      *     a subset of the object's available languages (if any).
      * @return array An array of available language identifiers
@@ -136,7 +136,7 @@ trait TranslatableTrait
      * the first of the new set is used as the default language and the current language
      * is reset to NULL (which falls onto the default language).
      *
-     * @param  (LanguageInterface|string)[] $langs
+     * @param  (LanguageInterface|string)[] $langs Optional language(s) filters.
      *     An array of zero or more language objects or language identifiers
      *     to set on the object.
      *
@@ -160,9 +160,7 @@ trait TranslatableTrait
     /**
      * Append a list of languages to the object.
      *
-     * @param  (LanguageInterface|string)[] $langs
-     *     An array of one or more language objects or language identifiers
-     *     to set on the object.
+     * @param  (LanguageInterface|string)[] $langs The languages to set.
      * @return MultilingualAwareInterface Chainable
      */
     public function addLanguages(array $langs)
@@ -188,7 +186,7 @@ trait TranslatableTrait
      * @param  LanguageInterface|array|string $lang A language object or identifier.
      * @return MultilingualAwareInterface Chainable
      *
-     * @throws InvalidArgumentException if the language is invalid.
+     * @throws InvalidArgumentException If the language is invalid.
      */
     public function addLanguage($lang)
     {
@@ -217,7 +215,7 @@ trait TranslatableTrait
      * @param  LanguageInterface|string $lang A language object or identifier.
      * @return MultilingualAwareInterface Chainable
      *
-     * @throws InvalidArgumentException if an array member isn't a string or instance of LanguageInterface
+     * @throws InvalidArgumentException If an array member isn't a string or instance of LanguageInterface.
      */
     public function removeLanguage($lang)
     {
@@ -247,7 +245,7 @@ trait TranslatableTrait
      * @param  LanguageInterface|string $lang A language object or identifier.
      * @return LanguageInterface|string|null A language object or identifier.
      *
-     * @throws InvalidArgumentException if an array member isn't a string or instance of LanguageInterface
+     * @throws InvalidArgumentException If an array member isn't a string or instance of LanguageInterface.
      */
     public function language($lang)
     {

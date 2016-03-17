@@ -36,7 +36,7 @@ interface MultilingualAwareInterface
      *
      * By default, only language identifiers are returned.
      *
-     * @param  (LanguageInterface|string)[] $langs
+     * @param  (LanguageInterface|string)[] $langs Optional language(s) filters.
      *     If an array of one or more lanagues is provided, the method returns
      *     a subset of the object's available languages (if any).
      * @return array An array of available languages
@@ -46,7 +46,7 @@ interface MultilingualAwareInterface
     /**
      * Retrieve the object's list of available language identifiers.
      *
-     * @param  (LanguageInterface|string)[] $langs
+     * @param  (LanguageInterface|string)[] $langs Optional language(s) filters.
      *     If an array of one or more lanagues is provided, the method returns
      *     a subset of the object's available languages (if any).
      * @return array An array of available language identifiers
@@ -56,7 +56,7 @@ interface MultilingualAwareInterface
     /**
      * Assign a list of languages to the object.
      *
-     * @param  (LanguageInterface|string)[] $langs
+     * @param  (LanguageInterface|string)[] $langs Optional language(s) filters.
      *     An array of zero or more language objects or language identifiers
      *     to set on the object.
      *
