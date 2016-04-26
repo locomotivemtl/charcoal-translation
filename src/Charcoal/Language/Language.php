@@ -213,6 +213,26 @@ class Language implements LanguageInterface
     }
 
     /**
+     * Get the language's locale formatted with an underscore ("_") as delimiters
+     *
+     * @return string Regional identifier
+     */
+    public function underscoreLocale()
+    {
+        return str_replace('-', '_', $this->locale);
+    }
+
+    /**
+     * Get the language's locale formatted with a hyphen ("-") as delimiters
+     *
+     * @return string Regional identifier
+     */
+    public function dashedLocale()
+    {
+        return str_replace('_', '-', $this->locale);
+    }
+
+    /**
      * Set the language's code(s)
      *
      * @link   http://www.faqs.org/rfcs/rfc4646.html Tags for Identifying Languages
