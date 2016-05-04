@@ -107,7 +107,9 @@ class LanguageRepository extends FileLoader
     public function make(array $langs)
     {
         if (!count($langs)) {
-            throw new InvalidArgumentException('Must be passed at least one language code.');
+            throw new InvalidArgumentException(
+                'Must be passed at least one language code.'
+            );
         }
 
         $this->setIdent($langs);
