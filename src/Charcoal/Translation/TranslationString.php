@@ -509,4 +509,18 @@ class TranslationString implements
     {
         return $this->all();
     }
+
+    /**
+     * Retrieve a Charcoal application's instance or a new instance of self.
+     *
+     * @see    ConfigurableInterface::create_config() For abstract definition of this method.
+     * @uses   TranslationConfig::instance()
+     * @param  array|string|null $data Optional data to pass to the new TranslationConfig instance.
+     * @return TranslationConfig
+     */
+    protected function createConfig($data = null)
+    {
+        $config = TranslationConfig::instance($data);
+        return $config;
+    }
 }

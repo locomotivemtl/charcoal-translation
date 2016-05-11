@@ -9,8 +9,8 @@ use \Charcoal\Translation\TranslationString;
 class CatalogTest extends \PHPUnit_Framework_TestCase
 {
     /**
-    *
-    */
+     *
+     */
     public function testOffsetExists()
     {
         $obj = new Catalog();
@@ -29,8 +29,8 @@ class CatalogTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    *
-    */
+     *
+     */
     public function testOffsetGet()
     {
         $obj = new Catalog();
@@ -52,8 +52,8 @@ class CatalogTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    *
-    */
+     *
+     */
     public function testOffsetSetString()
     {
         $obj = new Catalog();
@@ -74,8 +74,8 @@ class CatalogTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    *
-    */
+     *
+     */
     public function testOffsetSetInvalidValue()
     {
         $obj = new Catalog();
@@ -85,8 +85,8 @@ class CatalogTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    *
-    */
+     *
+     */
     public function testOffsetUnset()
     {
         $obj = new Catalog();
@@ -107,8 +107,8 @@ class CatalogTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    *
-    */
+     *
+     */
     public function testSetLanguage()
     {
         $obj = new Catalog();
@@ -122,8 +122,8 @@ class CatalogTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    *
-    */
+     *
+     */
     public function testLangUnsetReturnsDefault()
     {
         $obj = new Catalog();
@@ -131,8 +131,8 @@ class CatalogTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    *
-    */
+     *
+     */
     public function testAddTranslation()
     {
         $obj = new Catalog();
@@ -147,8 +147,8 @@ class CatalogTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    *
-    */
+     *
+     */
     public function testAddTranslationIdentStringException()
     {
         $obj = new Catalog();
@@ -158,9 +158,9 @@ class CatalogTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    * Test the `addEntry()` method with a `TranslationString`
-    * object as "values" (or "translations") parameter.
-    */
+     * Test the `addEntry()` method with a `TranslationString`
+     * object as "values" (or "translations") parameter.
+     */
     public function testAddTranslationTranslationString()
     {
         $cfg = [
@@ -178,9 +178,9 @@ class CatalogTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    * Ensures calling `translate()` with an ident that was never previously set
-    * returns the ident itself.
-    */
+     * Ensures calling `translate()` with an ident that was never previously set
+     * returns the ident itself.
+     */
     public function testTranslateReturnsIdentIfUnset()
     {
         $obj = new Catalog();

@@ -8,8 +8,8 @@ use \Charcoal\Translation\TranslationConfig;
 class TranslationConfigTest extends \PHPUnit_Framework_TestCase
 {
     /**
-    *
-    */
+     *
+     */
     public function testConstructorWithParam()
     {
         $obj = new TranslationConfig();

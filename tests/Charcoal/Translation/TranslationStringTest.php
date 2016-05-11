@@ -8,8 +8,8 @@ use \Charcoal\Translation\TranslationString;
 class TranslationStringTest extends \PHPUnit_Framework_TestCase
 {
     /**
-    *
-    */
+     *
+     */
     public function testConstructorWithParam()
     {
         $obj = new TranslationString('foobar');
@@ -17,8 +17,8 @@ class TranslationStringTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    *
-    */
+     *
+     */
     public function testMagicCall()
     {
         $obj = new TranslationString(
@@ -35,8 +35,8 @@ class TranslationStringTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    *
-    */
+     *
+     */
     public function testMagicString()
     {
         $obj = new TranslationString('foo bar baz');
@@ -47,8 +47,8 @@ class TranslationStringTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    *
-    */
+     *
+     */
     public function testSetVal()
     {
         $obj = new TranslationString(
@@ -81,16 +81,16 @@ class TranslationStringTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    *
-    */
+     *
+     */
     public function testAddVal()
     {
         $obj = new TranslationString();
     }
 
     /**
-    *
-    */
+     *
+     */
     public function testAddVallInvalidLangType()
     {
         $obj = new TranslationString();
@@ -99,8 +99,8 @@ class TranslationStringTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    *
-    */
+     *
+     */
     public function testAddVallInvalidString()
     {
         $obj = new TranslationString();
@@ -109,8 +109,8 @@ class TranslationStringTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    *
-    */
+     *
+     */
     public function testValInvalidLanguage()
     {
         $obj = new TranslationString();
@@ -119,8 +119,8 @@ class TranslationStringTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    *
-    */
+     *
+     */
     public function testValGetDefaultLanguage()
     {
         $obj = new TranslationString(
@@ -135,8 +135,8 @@ class TranslationStringTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    *
-    */
+     *
+     */
     public function testValEmptyStringIfUnset()
     {
         $obj = new TranslationString();
@@ -145,8 +145,8 @@ class TranslationStringTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    *
-    */
+     *
+     */
     public function testSetCurrentLanguage()
     {
         $obj = new TranslationString(
@@ -169,8 +169,8 @@ class TranslationStringTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    *
-    */
+     *
+     */
     public function testLanguageUnsetReturnsDefault()
     {
         $obj = new TranslationString();
@@ -178,8 +178,8 @@ class TranslationStringTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    *
-    */
+     *
+     */
     public function testSetValStringDefaultLanguage()
     {
         $obj = new TranslationString(
