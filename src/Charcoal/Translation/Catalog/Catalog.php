@@ -431,8 +431,8 @@ class Catalog implements
                 'Invalid value argument.'
             );
         }
-
     }
+
     /**
      * Alias of `self::removeTranslation()`
      *
