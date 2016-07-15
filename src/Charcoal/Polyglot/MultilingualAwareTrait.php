@@ -30,11 +30,11 @@ trait MultilingualAwareTrait
     /**
      * Determine if the object has more than one available language.
      *
-     * @return boolean Whether the object is unilingual or not.
+     * @return boolean Whether the object is multilingual (TRUE) or unilingual (FALSE).
      */
     public function isMultilingual()
     {
-        return ($this->availableLanguages() > 1);
+        return count($this->availableLanguages()) > 1;
     }
 
     /**
