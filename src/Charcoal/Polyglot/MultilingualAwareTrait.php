@@ -22,7 +22,7 @@ use \Charcoal\Language\LanguageInterface;
  * Contains three additional methods:
  *
  * • `is_multilingual()`
- * • `resolveLanguage_ident()` (static)
+ * • `resolveLanguageIdent()` (static)
  * • `resolve_specialLanguages()`
  */
 trait MultilingualAwareTrait

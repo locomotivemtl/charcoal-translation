@@ -96,7 +96,7 @@ trait TranslatableTrait
     {
         if (count($langs)) {
             array_walk($langs, function (&$val, $key) {
-                $val = self::resolveLanguage_ident($val);
+                $val = self::resolveLanguageIdent($val);
             });
 
             return array_intersect_key($this->languages, array_flip($langs));
@@ -119,7 +119,7 @@ trait TranslatableTrait
 
         if (count($langs)) {
             array_walk($langs, function (&$val, $key) {
-                $val = self::resolveLanguage_ident($val);
+                $val = self::resolveLanguageIdent($val);
             });
 
             return array_intersect($available, $langs);
