@@ -3,6 +3,7 @@
 namespace Charcoal\Translation;
 
 use \ArrayAccess;
+use \Traversable;
 use \Exception;
 use \InvalidArgumentException;
 use \JsonSerializable;
@@ -522,5 +523,37 @@ class TranslationString implements
     {
         $config = TranslationConfig::instance($data);
         return $config;
+    }
+    /**
+     * Determine whether a variable is translatable.
+     *
+     * Useful for ignoring empty-like values.
+     *
+     * @param  mixed $var The value to be checked.
+     * @return boolean
+     */
+    public static function isTranslatable($var)
+    {
+        if ($var === null) {
+            return false;
+        }
+
+        if (is_string($var)) {
+            return !!strlen(trim($var));
+        }
+
+        if ($var instanceof TranslationStringInterface) {
+            return true;
+        }
+
+        if ($var instanceof Traversable) {
+            $var = iterator_to_array($var);
+        }
+
+        if (is_array($var)) {
+            return !!array_filter($var, 'strlen');
+        }
+
+        return false;
     }
 }
