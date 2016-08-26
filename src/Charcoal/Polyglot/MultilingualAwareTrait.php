@@ -28,13 +28,33 @@ use \Charcoal\Language\LanguageInterface;
 trait MultilingualAwareTrait
 {
     /**
-     * Determine if the object has more than one available language.
+     * Determine if the object supports more than one available language.
      *
      * @return boolean Whether the object is multilingual (TRUE) or unilingual (FALSE).
      */
     public function isMultilingual()
     {
         return count($this->availableLanguages()) > 1;
+    }
+
+    /**
+     * Determine if the object supports two languages.
+     *
+     * @return boolean
+     */
+    public function isBilingual()
+    {
+        return count($this->availableLanguages()) === 2;
+    }
+
+    /**
+     * Determine if the object supports more than two available language.
+     *
+     * @return boolean
+     */
+    public function isPlurilingual()
+    {
+        return count($this->availableLanguages()) > 2;
     }
 
     /**
