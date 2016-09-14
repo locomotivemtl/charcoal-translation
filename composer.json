@@ -19,16 +19,13 @@
 		"psr/log": "^1.0",
 		"psr/http-message": "^1.0",
 		"locomotivemtl/charcoal-config": "~0.6",
-		"locomotivemtl/charcoal-core": "dev-master"
+		"locomotivemtl/charcoal-core": "^0.1"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "^4.8",
 		"squizlabs/php_codesniffer": "^2.4",
 		"satooshi/php-coveralls":"~1.0.1",
 		"monolog/monolog": "^1.17"
-	},
-	"suggest": {
-		"Symfony Translation": "For a well made translator."
 	},
 	"autoload": {
 		"psr-4": {
