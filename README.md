@@ -14,8 +14,8 @@ $translation_config = TranslationConfig::instance();
 
 // Set the list of available languages
 $translation_config->set_available_langs([
-	'en' => [],
-	'fr' => []
+    'en' => [],
+    'fr' => []
 ]);
 
 // Set the default language to "English" ("en")
@@ -36,8 +36,8 @@ echo $catalog->tr('my string');
 
 // Add a custom string..
 $catalog->add_translation('custom string', [
-	'en' => 'Custom string',
-	'fr' => 'Chaîne aléatoire'
+    'en' => 'Custom string',
+    'fr' => 'Chaîne aléatoire'
 ]);
 ech $catalog->tr('custom string');
 ```
@@ -50,8 +50,8 @@ Using the `TranslationString` object directly:
 use \Charcoal\Translation\TranslationString;
 
 $str = new TranslationString([
-	'fr' => 'foo',
-	'en' => 'bar'
+    'fr' => 'foo',
+    'en' => 'bar'
 ]);
 
 // All the following examples output "bar"
@@ -72,8 +72,8 @@ By default, all call to the `{{# _t }}` mustache helper in Charcoal Templates wi
 
 For example:
 
-- _Assuming the "my string" has been added to the main catalog, as in the previous example_
+-   _Assuming the "my string" has been added to the main catalog, as in the previous example_
 
 ## Dependencies
 
-- `Charcoal\Config` required by `TranslationConfig`
+-   `Charcoal\Config` required by `TranslationConfig`
