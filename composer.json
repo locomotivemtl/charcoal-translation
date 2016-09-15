@@ -1,6 +1,8 @@
 {
     "name": "locomotivemtl/charcoal-translation",
+    "type": "library",
     "description": "Charcoal Translations & Languages",
+    "keywords": [ "charcoal", "translation", "i18n", "l10n" ],
     "homepage": "https://charcoal.locomotive.ca",
     "license": "MIT",
     "authors": [
@@ -14,6 +16,11 @@
         }
     ],
     "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1.x-dev"
+        }
+    },
     "require": {
         "php": ">=5.5.0",
         "psr/log": "^1.0",
