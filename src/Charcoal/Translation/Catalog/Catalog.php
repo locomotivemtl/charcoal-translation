@@ -2,6 +2,7 @@
 
 namespace Charcoal\Translation\Catalog;
 
+use \Traversable;
 use \ArrayAccess;
 use \InvalidArgumentException;
 
@@ -80,21 +81,40 @@ class Catalog implements
     /**
      * Add a translation resource to the catalog.
      *
-     * @param  ResourceInterface|array|string $resource The resource.
-     * @throws InvalidArgumentException If the resource is not an array.
+     * @param  array|Traversable $resources A collection resources.
+     * @throws InvalidArgumentException If the $resources is not a traversable collection.
      * @return self
-     * @todo   Implement handling of a ResourceInterface instance.
      */
-    public function addResource($resource)
+    public function addResources($resources)
     {
-        if ($resource instanceof ResourceInterface) {
-            throw new InvalidArgumentException('ResourceInterface object not (yet) supported.');
-        } elseif (is_array($resource)) {
-            foreach ($resource as $ident => $translations) {
-                $this->addTranslations($ident, $translations);
+        if (is_array($resources) || $resources instanceof Traversable) {
+            foreach ($resources as $resource) {
+                $this->addResource($resource);
             }
-        } elseif (is_string($resource)) {
-            throw new InvalidArgumentException('String resource not (yet) supported.');
+        } else {
+            throw new InvalidArgumentException('Must be an array or a traversable collection of resources.');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Add a translation resource to the catalog.
+     *
+     * @param  ResourceInterface $resource The resource.
+     * @return self
+     */
+    public function addResource(ResourceInterface $resource)
+    {
+        $langCode = $resource->sourceLanguage();
+        if ($langCode) {
+            foreach ($resource as $ident => $message) {
+                $this->addEntryTranslation($ident, $langCode, $message);
+            }
+        } else {
+            foreach ($resource as $ident => $translations) {
+                $this->addEntry($ident, $translations);
+            }
         }
 
         return $this;
@@ -142,18 +162,38 @@ class Catalog implements
      * If an empty array is provided, the method should consider this a request
      * to empty the entries store.
      *
-     * @param  mixed[] $entries An array of zero or more entries to set the catalog.
-     *
+     * @param  array|Traversable|null $entries An array of zero or more entries to set the catalog.
      * @return self
      */
-    public function setEntries(array $entries = [])
+    public function setEntries($entries = null)
     {
         $this->entries = [];
 
-        if (count($entries)) {
+        if ($entries) {
+            $this->addEntries($entries);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the array of entries and their translations
+     *
+     * If an empty array is provided, the method should consider this a request
+     * to empty the entries store.
+     *
+     * @param  array|Traversable $entries An array of zero or more entries to set the catalog.
+     * @throws InvalidArgumentException If the $entries is not a traversable collection.
+     * @return self
+     */
+    public function addEntries($entries)
+    {
+        if (is_array($entries) || $entries instanceof Traversable) {
             foreach ($entries as $ident => $translations) {
                 $this->addEntry($ident, $translations);
             }
+        } else {
+            throw new InvalidArgumentException('Must be an array or a traversable collection of entries.');
         }
 
         return $this;

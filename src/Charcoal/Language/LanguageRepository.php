@@ -24,7 +24,7 @@ class LanguageRepository extends FileLoader
      *
      * @var PoolInterface
      */
-    private $cache;
+    protected $cache;
 
     /**
      * A model to apply language metadata onto.

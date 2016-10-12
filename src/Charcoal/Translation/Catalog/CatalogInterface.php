@@ -2,19 +2,13 @@
 
 namespace Charcoal\Translation\Catalog;
 
+use Traversable;
+
 /**
  * Defines a collector of TranslationStringInterface objects
  */
 interface CatalogInterface
 {
-    /**
-     * Add a translation resource to the catalog.
-     *
-     * @param  ResourceInterface|array|string $resource The resource to add to catalog.
-     * @return CatalogInterface Chainable
-     */
-    public function addResource($resource);
-
     /**
      * Get the array of entries and their translations
      *
@@ -32,10 +26,10 @@ interface CatalogInterface
      * If an empty array is provided, the method should consider this a request
      * to empty the entries store.
      *
-     * @param  mixed[] $entries Optional array of zero or more entries to set the catalog.
+     * @param  array|Traversable|null $entries Optional array of zero or more entries to set the catalog.
      * @return CatalogInterface Chainable
      */
-    public function setEntries(array $entries = []);
+    public function setEntries($entries = null);
 
     /**
      * Get an entry in the catalog

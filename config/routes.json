@@ -1,0 +1,9 @@
+{
+    "routes": {
+        "scripts": {
+            "translation/update": {
+                "ident": "charcoal/translation/script/catalog"
+            }
+        }
+    }
+}
