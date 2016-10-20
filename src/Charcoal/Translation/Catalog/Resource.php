@@ -122,10 +122,17 @@ class Resource extends AbstractConfig implements ResourceInterface
         $messages  = [];
 
         $i = 0;
-        while ($data = fgetcsv($handle)) {
-            $i++;
+        $blank = [ null ];
+        // @codingStandardsIgnoreStart
+        while (($data = fgetcsv($handle)) !== false) {
+            // @codingStandardsIgnoreEnd
+            if ($data === $blank) {
+                continue;
+            }
 
-            if ($i == 1) {
+            if ($i === 0) {
+                $i++;
+
                 $source   = $data[0];
                 $count   = count($data);
                 $context = $data[( $count-1 )];

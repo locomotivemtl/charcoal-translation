@@ -1220,9 +1220,14 @@ class CatalogScript extends AdminScript
         $languages = [];
 
         $r = 0;
+        $blank = [ null ];
         // @codingStandardsIgnoreStart
         while (($row = fgetcsv($file)) !== false) {
             // @codingStandardsIgnoreEnd
+            if ($row === $blank) {
+                continue;
+            }
+
             /** Extract pre-defined languages from the header row */
             if ($r === 0) {
                 $r++;
