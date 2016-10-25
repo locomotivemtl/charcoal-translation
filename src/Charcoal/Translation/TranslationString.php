@@ -269,20 +269,7 @@ class TranslationString implements
      */
     public function hasVal($lang = null)
     {
-        if ($lang === null) {
-            $lang = $this->currentLanguage();
-        } else {
-            $lang = self::resolveLanguageIdent($lang);
-
-            if (!is_string($lang)) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Invalid language, received %s',
-                        (is_object($lang) ? get_class($lang) : gettype($lang))
-                    )
-                );
-            }
-        }
+        $lang = $this->parseLanguageIdent($lang);
 
         return !empty($this->val[$lang]);
     }
@@ -296,6 +283,32 @@ class TranslationString implements
     public function hasTranslation($lang = null)
     {
         return $this->hasVal($lang);
+    }
+
+    /**
+     * Get a translation value or the first one available.
+     *
+     * Behaves like {@see self::val()} except that if there's no translation in
+     * the default language, it returns the first non-empty translation.
+     *
+     * @param  LanguageInterface|string|null $lang Optional supported language to retrieve a translation in.
+     * @throws InvalidArgumentException If language is invalid.
+     * @return string
+     */
+    public function fallback($lang = null)
+    {
+        $lang = $this->parseLanguageIdent($lang);
+        $val  = $this->val($lang);
+        if (empty($val)) {
+            $available = array_diff_key($this->val, array_flip([ $lang, $this->defaultLanguage() ]));
+            foreach ($available as $code => $l10n) {
+                if (!empty($l10n)) {
+                    return $l10n;
+                }
+            }
+        }
+
+        return $val;
     }
 
     /**
@@ -524,6 +537,37 @@ class TranslationString implements
         $config = TranslationConfig::instance($data);
         return $config;
     }
+
+    /**
+     * Resolve the given language's identifier or return the current language.
+     *
+     * Behaves like {@see self::resolveLanguageIdent()} except it returns
+     * the current language if the value is NULL.
+     *
+     * @param  mixed $lang A language object or identifier.
+     * @throws InvalidArgumentException If language is invalid.
+     * @return string|mixed A language identifier.
+     */
+    protected function parseLanguageIdent($lang)
+    {
+        if ($lang === null) {
+            $lang = $this->currentLanguage();
+        } else {
+            $lang = self::resolveLanguageIdent($lang);
+
+            if (!is_string($lang)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Invalid language, received %s',
+                        (is_object($lang) ? get_class($lang) : gettype($lang))
+                    )
+                );
+            }
+        }
+
+        return $lang;
+    }
+
     /**
      * Determine whether a variable is translatable.
      *
