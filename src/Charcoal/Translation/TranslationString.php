@@ -595,7 +595,19 @@ class TranslationString implements
         }
 
         if (is_array($var)) {
-            return !!array_filter($var, 'strlen');
+            return !!array_filter(
+                $var,
+                function ($v, $k) {
+                    if (is_string($k) && is_string($v)) {
+                        if (strlen($k) && mb_strlen($v)) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                },
+                ARRAY_FILTER_USE_BOTH
+            );
         }
 
         return false;
