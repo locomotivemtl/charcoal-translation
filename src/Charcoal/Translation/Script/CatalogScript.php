@@ -18,11 +18,15 @@ use \Psr\Http\Message\ResponseInterface;
 // From 'charcoal-core'
 use \Charcoal\Model\ModelFactory;
 
-// From 'charcoal-admin'
-use \Charcoal\Admin\AdminScript;
-
 // From 'charcoal-translation'
 use \Charcoal\Language\LanguageInterface;
+
+// From 'charcoal-app'
+use \Charcoal\App\Script\ArgScriptTrait;
+use \Charcoal\App\Script\PathScriptTrait;
+
+// From 'charcoal-admin'
+use \Charcoal\Admin\AdminScript;
 
 /**
  * Catalog all strings to be translated.
@@ -34,9 +38,8 @@ use \Charcoal\Language\LanguageInterface;
  */
 class CatalogScript extends AdminScript
 {
-    use ScriptSupportTrait {
-        ScriptSupportTrait::defaultArguments as extraDefaultArguments;
-    }
+    use ArgScriptTrait;
+    use PathScriptTrait;
 
     /**
      * A mask of directory delimiters.
@@ -177,37 +180,6 @@ class CatalogScript extends AdminScript
      * @var string|null
      */
     protected $sourceLanguage;
-
-
-
-
-
-    /**
-     * @var string $fileType
-     */
-    protected $fileType;
-
-    /**
-     * @var string $output
-     */
-    protected $output;
-
-    /**
-     * @var string $path
-     */
-    protected $path;
-
-    /**
-     * @var array $locales
-     */
-    protected $locales;
-
-    /**
-     * AppConfig
-     *
-     * @var [type]
-     */
-    protected $appConfig;
 
     /**
      * @return void
@@ -362,10 +334,10 @@ class CatalogScript extends AdminScript
                 $importMessage = null;
             }
 
-            $cli->advance(1, $importMessage);
+            $progress->advance(1, $importMessage);
             $messages = $this->fromCSV();
         } else {
-            $cli->advance();
+            $progress->advance();
             $messages = [];
         }
 
@@ -375,7 +347,7 @@ class CatalogScript extends AdminScript
         $z++;
         $basePath = $this->basePath();
         foreach ($files as $file) {
-            $cli->advance(1, ($this->quiet() ? null : 'Parsing source files…'));
+            $progress->advance(1, ($this->quiet() ? null : 'Parsing source files…'));
 
             if ($this->verbose()) {
                 $cli->whisper(str_replace($basePath, '', $file));
@@ -398,7 +370,7 @@ class CatalogScript extends AdminScript
             }
         }
 
-        $cli->advance(1, $writeMessage);
+        $progress->advance(1, $writeMessage);
 
         if ($dry) {
             $extractedMessagesCount = 0;
@@ -446,7 +418,7 @@ class CatalogScript extends AdminScript
          * Step 6: Conclusion
          */
         $z++;
-        $cli->advance(1, 'Done');
+        $progress->advance(1, 'Done');
 
         if (!$this->quiet()) {
             $cli->shout($resultMessage.'.');
@@ -609,7 +581,7 @@ class CatalogScript extends AdminScript
 
 
     // CLI Arguments
-    // =================================================================================================================
+    // =========================================================================
 
     /**
      * Retrieve the script's supported arguments.
@@ -627,7 +599,7 @@ class CatalogScript extends AdminScript
                 }
 
                 try {
-                    $this->asArray($response);
+                    $this->parseAsArray($response);
                 } catch (Exception $e) {
                     unset($e);
                     return false;
@@ -746,7 +718,7 @@ class CatalogScript extends AdminScript
             ];
         }
 
-        return array_merge($this->extraDefaultArguments(), $arguments);
+        return array_merge(parent::defaultArguments(), $arguments);
     }
 
     /**
@@ -992,7 +964,7 @@ class CatalogScript extends AdminScript
     {
         $this->clearLanguages();
 
-        $languages = $this->asArray($languages);
+        $languages = $this->parseAsArray($languages);
 
         if (is_array($languages) || $languages instanceof Traversable) {
             $this->addSourceLanguage();
@@ -1174,10 +1146,41 @@ class CatalogScript extends AdminScript
         return $this->sourceLanguage;
     }
 
+    /**
+     * Resolve the given language down to a language code.
+     *
+     * @param  mixed $lang A locale or language identifier.
+     * @throws InvalidArgumentException If the language is invalid.
+     * @return string Return the given language's code.
+     */
+    protected function resolveLanguage($lang)
+    {
+        if (is_string($lang)) {
+            return $lang;
+        } elseif (method_exists($lang, '__toString')) {
+            return strval($lang);
+        } elseif (is_array($lang) || $lang instanceof ArrayAccess) {
+            if (isset($lang['ident'])) {
+                return $lang['ident'];
+            } elseif (isset($lang['code'])) {
+                return $lang['code'];
+            }
+        } elseif ($lang instanceof LanguageInterface) {
+            return $lang->ident();
+        }
+
+        throw new InvalidArgumentException(
+            sprintf(
+                'Must be a string-cast language code or an instance of LanguageInterface, received %s',
+                (is_object($lang) ? get_class($lang) : gettype($lang))
+            )
+        );
+    }
+
 
 
     // CSV Handling
-    // =================================================================================================================
+    // =========================================================================
 
     /**
      * Retrieve existing messages from the translations file.
