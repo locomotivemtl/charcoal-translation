@@ -2,7 +2,7 @@
 
 namespace Charcoal\Translation\Catalog;
 
-// Local Dependency
+// From 'charcoal-translation'
 use \Charcoal\Translation\Catalog\CatalogInterface;
 
 /**

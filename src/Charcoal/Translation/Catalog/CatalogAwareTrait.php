@@ -2,7 +2,8 @@
 
 namespace Charcoal\Translation\Catalog;
 
-// Local Dependency
+// From 'charcoal-translation'
+use \Charcoal\Language\LanguageInterface;
 use \Charcoal\Translation\Catalog\CatalogInterface;
 
 /**
@@ -39,5 +40,17 @@ trait CatalogAwareTrait
     public function catalog()
     {
         return $this->catalog;
+    }
+
+    /**
+     * Get a translation for an entry in the catalog.
+     *
+     * @param  string                   $ident An entry's key.
+     * @param  LanguageInterface|string $lang  Optional. Defaults to the current language.
+     * @return string
+     */
+    public function translate($ident, $lang = null)
+    {
+        return $this->catalog()->translate($ident, $lang);
     }
 }

@@ -11,6 +11,7 @@ use \Charcoal\Config\ConfigurableInterface;
 use \Charcoal\Config\ConfigurableTrait;
 
 // Local Dependencies
+use \Charcoal\Language\LanguageInterface;
 use \Charcoal\Polyglot\MultilingualAwareInterface;
 use \Charcoal\Translation\Catalog\CatalogInterface;
 use \Charcoal\Translation\ConfigurableTranslationTrait;
