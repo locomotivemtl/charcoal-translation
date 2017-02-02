@@ -10,13 +10,16 @@ use \RecursiveCallbackFilterIterator;
 use \SplFileInfo;
 use \Traversable;
 
-// Dependency from 'Pimple'
+// From Pimple
 use \Pimple\Container;
 
-// Dependency from 'charcoal-core'
+// From PSR-6
+use \Psr\Cache\CacheItemPoolInterface;
+
+// From 'charcoal-core'
 use \Charcoal\Loader\FileLoader;
 
-// Local dependencies
+// From 'charcoal-app'
 use \Charcoal\Translation\Catalog\Catalog;
 use \Charcoal\Translation\Catalog\CatalogInterface;
 use \Charcoal\Translation\Catalog\Resource;
@@ -47,7 +50,7 @@ class ResourceRepository extends FileLoader
      *
      * @var PoolInterface
      */
-    protected $cache;
+    protected $cachePool;
 
     /**
      * Store reference to translation catalog.
@@ -98,18 +101,54 @@ class ResourceRepository extends FileLoader
     private $resourceClass = Resource::class;
 
     /**
-     * Inject dependencies from a Pimple Container.
+     * Return new FileLoader object.
      *
-     * @param  Container $container A dependencies container instance.
-     * @return self
+     * @param array $data The loader's dependencies.
      */
-    public function setDependencies(Container $container)
+    public function __construct(array $data = null)
     {
-        $this->setBasePath($container['config']['base_path']);
+        if (isset($data['languages'])) {
+            $this->setLanguages($data['languages']);
+        }
 
-        $this->cache = $container['cache'];
+        if (isset($data['catalog'])) {
+            $this->setCatalog($data['catalog']);
+        }
+
+        parent::__construct($data);
+
+        $this->setCachePool($data['cache']);
+    }
+
+    /**
+     * Set the cache service.
+     *
+     * @param  CacheItemPoolInterface $cache A PSR-6 compliant cache pool instance.
+     * @return MetadataLoader Chainable
+     */
+    private function setCachePool(CacheItemPoolInterface $cache)
+    {
+        $this->cachePool = $cache;
 
         return $this;
+    }
+
+    /**
+     * Retrieve the cache service.
+     *
+     * @throws RuntimeException If the cache service was not previously set.
+     * @return CacheItemPoolInterface
+     */
+    private function cachePool()
+    {
+        if (!isset($this->cachePool)) {
+            throw new RuntimeException(sprintf(
+                'Cache Pool is not defined for "%s"',
+                get_class($this)
+            ));
+        }
+
+        return $this->cachePool;
     }
 
     /**
@@ -162,23 +201,21 @@ class ResourceRepository extends FileLoader
         $ident = $this->ident();
         $messages = [];
 
-        if ($this->cache) {
-            $item = $this->cache->getItem('translations/resources/'.$ident);
+        $cacheKey  = 'translations/resources/'.$ident;
+        $cacheItem = $this->cachePool()->getItem($cacheKey);
 
-            $messages = $item->get();
-            if ($item->isMiss()) {
-                $item->lock();
+        if (!$cacheItem->isHit()) {
+            $cacheItem->lock();
 
-                $messages = $this->loadFromRepositories();
-
-                $item->set($messages);
-                $this->cache->save($item);
-            }
-        } else {
             $messages = $this->loadFromRepositories();
+
+            $cacheItem->set($messages);
+            $this->cachePool()->save($cacheItem);
+
+            return $messages;
         }
 
-        return $messages;
+        return $cacheItem->get();
     }
 
 
