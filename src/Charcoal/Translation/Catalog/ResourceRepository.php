@@ -205,8 +205,6 @@ class ResourceRepository extends FileLoader
         $cacheItem = $this->cachePool()->getItem($cacheKey);
 
         if (!$cacheItem->isHit()) {
-            $cacheItem->lock();
-
             $messages = $this->loadFromRepositories();
 
             $cacheItem->set($messages);

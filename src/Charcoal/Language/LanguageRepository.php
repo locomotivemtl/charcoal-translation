@@ -170,8 +170,6 @@ class LanguageRepository extends FileLoader
         $cacheItem = $this->cachePool()->getItem($cacheKey);
 
         if (!$cacheItem->isHit()) {
-            $cacheItem->lock();
-
             $index = $this->loadFromRepositories();
 
             if ('all' !== $ident) {
