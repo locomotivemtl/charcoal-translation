@@ -201,7 +201,7 @@ class ResourceRepository extends FileLoader
         $ident = $this->ident();
         $messages = [];
 
-        $cacheKey  = 'translations/resources/'.$ident;
+        $cacheKey  = str_replace('/', '.', 'translations/resources/'.$ident);
         $cacheItem = $this->cachePool()->getItem($cacheKey);
 
         if (!$cacheItem->isHit()) {

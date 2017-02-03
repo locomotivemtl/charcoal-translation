@@ -135,11 +135,12 @@ class LanguageRepository extends FileLoader
         $index = [];
 
         if ($this->cache) {
-            $item = $this->cache->getItem('languages/index/'.$ident);
+            $cacheKey  = str_replace('/', '.', 'languages/index/'.$ident);
+            $cacheItem = $this->cache->getItem($cacheKey);
 
-            $index = $item->get();
-            if ($item->isMiss()) {
-                $item->lock();
+            $index = $cacheItem->get();
+            if (!$cacheItem->isHit()) {
+                $cacheItem->lock();
 
                 $index = $this->loadFromRepositories();
 
@@ -156,9 +157,9 @@ class LanguageRepository extends FileLoader
                     $index = $languages;
                 }
 
-                $item->set($index);
+                $cacheItem->set($index);
 
-                $this->cache->save($item);
+                $this->cache->save($cacheItem);
             }
         } else {
             $index = $this->loadFromRepositories();
