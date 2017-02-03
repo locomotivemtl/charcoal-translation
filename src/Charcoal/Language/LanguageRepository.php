@@ -2,15 +2,19 @@
 
 namespace Charcoal\Language;
 
+use \RuntimeException;
 use \InvalidArgumentException;
 
-// Dependency from 'Pimple'
+// From Pimple
 use \Pimple\Container;
 
-// Dependency from 'charcoal-core'
+// From PSR-6
+use \Psr\Cache\CacheItemPoolInterface;
+
+// From 'charcoal-core'
 use \Charcoal\Loader\FileLoader;
 
-// Local dependencies
+// From 'charcoal-translation'
 use \Charcoal\Language\Language;
 use \Charcoal\Language\LanguageInterface;
 
@@ -22,9 +26,9 @@ class LanguageRepository extends FileLoader
     /**
      * Store reference to cache from container.
      *
-     * @var PoolInterface
+     * @var CacheItemPoolInterface
      */
-    protected $cache;
+    protected $cachePool;
 
     /**
      * A model to apply language metadata onto.
@@ -34,18 +38,46 @@ class LanguageRepository extends FileLoader
     protected $source;
 
     /**
-     * Inject dependencies from a Pimple Container.
+     * Return new LanguageRepository.
      *
-     * @param  Container $container A dependencies container instance.
-     * @return self
+     * @param array $data The repository's dependencies.
      */
-    public function setDependencies(Container $container)
+    public function __construct(array $data = null)
     {
-        $this->setBasePath($container['config']['base_path']);
+        parent::__construct($data);
 
-        $this->cache = $container['cache'];
+        $this->setCachePool($data['cache']);
+    }
+
+    /**
+     * Set the cache service.
+     *
+     * @param  CacheItemPoolInterface $cache A PSR-6 compliant cache pool instance.
+     * @return LanguageRepository Chainable
+     */
+    private function setCachePool(CacheItemPoolInterface $cache)
+    {
+        $this->cachePool = $cache;
 
         return $this;
+    }
+
+    /**
+     * Retrieve the cache service.
+     *
+     * @throws RuntimeException If the cache service was not previously set.
+     * @return CacheItemPoolInterface
+     */
+    private function cachePool()
+    {
+        if (!isset($this->cachePool)) {
+            throw new RuntimeException(sprintf(
+                'Cache Pool is not defined for "%s"',
+                get_class($this)
+            ));
+        }
+
+        return $this->cachePool;
     }
 
     /**
@@ -53,7 +85,7 @@ class LanguageRepository extends FileLoader
      *
      * @param  mixed $ident A subset of language identifiers.
      * @throws InvalidArgumentException If the ident is invalid.
-     * @return self
+     * @return LanguageRepository Chainable
      */
     public function setIdent($ident)
     {
@@ -87,7 +119,7 @@ class LanguageRepository extends FileLoader
      * Assign the LanguageInterface model.
      *
      * @param  LanguageInterface $source Repository source.
-     * @return self
+     * @return LanguageRepository Chainable
      */
     public function setSource(LanguageInterface $source)
     {
@@ -134,38 +166,34 @@ class LanguageRepository extends FileLoader
         $ident = $this->ident();
         $index = [];
 
-        if ($this->cache) {
-            $cacheKey  = str_replace('/', '.', 'languages/index/'.$ident);
-            $cacheItem = $this->cache->getItem($cacheKey);
+        $cacheKey  = str_replace('/', '.', 'languages/index/'.$ident);
+        $cacheItem = $this->cachePool()->getItem($cacheKey);
 
-            $index = $cacheItem->get();
-            if (!$cacheItem->isHit()) {
-                $cacheItem->lock();
+        if (!$cacheItem->isHit()) {
+            $cacheItem->lock();
 
-                $index = $this->loadFromRepositories();
+            $index = $this->loadFromRepositories();
 
-                if ('all' !== $ident) {
-                    $languages = [];
-                    $subset    = explode(',', $ident);
+            if ('all' !== $ident) {
+                $languages = [];
+                $subset    = explode(',', $ident);
 
-                    foreach ($subset as $langCode) {
-                        if (isset($index[$langCode])) {
-                            $languages[$langCode] = $index[$langCode];
-                        }
+                foreach ($subset as $langCode) {
+                    if (isset($index[$langCode])) {
+                        $languages[$langCode] = $index[$langCode];
                     }
-
-                    $index = $languages;
                 }
 
-                $cacheItem->set($index);
-
-                $this->cache->save($cacheItem);
+                $index = $languages;
             }
-        } else {
-            $index = $this->loadFromRepositories();
+
+            $cacheItem->set($index);
+            $this->cachePool()->save($cacheItem);
+
+            return $index;
         }
 
-        return $index;
+        return $cacheItem->get();
     }
 
     /**

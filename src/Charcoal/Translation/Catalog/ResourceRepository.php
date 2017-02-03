@@ -19,7 +19,7 @@ use \Psr\Cache\CacheItemPoolInterface;
 // From 'charcoal-core'
 use \Charcoal\Loader\FileLoader;
 
-// From 'charcoal-app'
+// From 'charcoal-translation'
 use \Charcoal\Translation\Catalog\Catalog;
 use \Charcoal\Translation\Catalog\CatalogInterface;
 use \Charcoal\Translation\Catalog\Resource;
@@ -48,7 +48,7 @@ class ResourceRepository extends FileLoader
     /**
      * Store reference to cache from container.
      *
-     * @var PoolInterface
+     * @var CacheItemPoolInterface
      */
     protected $cachePool;
 
@@ -101,9 +101,9 @@ class ResourceRepository extends FileLoader
     private $resourceClass = Resource::class;
 
     /**
-     * Return new FileLoader object.
+     * Return new ResourceRepository.
      *
-     * @param array $data The loader's dependencies.
+     * @param array $data The repository's dependencies.
      */
     public function __construct(array $data = null)
     {
@@ -124,7 +124,7 @@ class ResourceRepository extends FileLoader
      * Set the cache service.
      *
      * @param  CacheItemPoolInterface $cache A PSR-6 compliant cache pool instance.
-     * @return MetadataLoader Chainable
+     * @return ResourceRepository Chainable
      */
     private function setCachePool(CacheItemPoolInterface $cache)
     {
@@ -156,7 +156,7 @@ class ResourceRepository extends FileLoader
      *
      * @param  mixed $ident A subset of language identifiers.
      * @throws InvalidArgumentException If the ident is invalid.
-     * @return self
+     * @return ResourceRepository Chainable
      */
     public function setIdent($ident)
     {
@@ -262,7 +262,7 @@ class ResourceRepository extends FileLoader
      *
      * @param  string $path A file or directory path.
      * @throws InvalidArgumentException If the path does not exist or is invalid.
-     * @return self
+     * @return ResourceRepository Chainable
      */
     public function addPath($path)
     {
@@ -281,7 +281,7 @@ class ResourceRepository extends FileLoader
      * Prepend a path.
      *
      * @param  string $path A file or directory path.
-     * @return self
+     * @return ResourceRepository Chainable
      */
     public function prependPath($path)
     {
@@ -368,7 +368,7 @@ class ResourceRepository extends FileLoader
      * Set the languages to import.
      *
      * @param  array|Traversable $languages The languages to import.
-     * @return self
+     * @return ResourceRepository Chainable
      */
     public function setLanguages($languages)
     {
@@ -391,7 +391,7 @@ class ResourceRepository extends FileLoader
      * Set an translation catalog.
      *
      * @param  CatalogInterface $catalog The catalog, to store translations.
-     * @return self
+     * @return ResourceRepository Chainable
      */
     public function setCatalog(CatalogInterface $catalog)
     {
@@ -442,7 +442,7 @@ class ResourceRepository extends FileLoader
      *
      * @param  string $className The class name of the object catalog model.
      * @throws InvalidArgumentException If the class name is not a string.
-     * @return AbstractPropertyDisplay Chainable
+     * @return ResourceRepository Chainable
      */
     public function setCatalogClass($className)
     {
@@ -495,7 +495,7 @@ class ResourceRepository extends FileLoader
      *
      * @param  string $className The class name of the object resource model.
      * @throws InvalidArgumentException If the class name is not a string.
-     * @return AbstractPropertyDisplay Chainable
+     * @return ResourceRepository Chainable
      */
     public function setResourceClass($className)
     {
