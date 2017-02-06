@@ -43,11 +43,46 @@ class TranslatorTest extends PHPUnit_Framework_TestCase
         $ret = $this->obj->translation('foo');
         $this->assertInstanceOf(Translation::class, $ret);
         $this->assertEquals('foo', (string)$ret);
+
+        $translation = clone($ret);
+        $ret = $this->obj->translation($translation);
+        $this->assertInstanceOf(Translation::class, $ret);
+        $this->assertEquals('foo', (string)$ret);
+
+        $ret = $this->obj->translation([
+            'foo' => 'foobar',
+            'bar' => 'barfoo'
+        ]);
+        $this->assertInstanceOf(Translation::class, $ret);
+        $this->assertEquals('foobar', (string)$ret);
+    }
+
+        /**
+     * @dataProvider invalidTranslationsProvider
+     */
+    public function testTranslationInvalidValuesReturnNull($val)
+    {
+        $this->assertNull($this->obj->translation($val));
     }
 
     public function testSetLocaleSetLanguageManagerCurrentLanguage()
     {
         $this->obj->setLocale('bar');
         $this->assertEquals('bar', $this->languageManager->currentLanguage());
+    }
+
+    public function invalidTranslationsProvider()
+    {
+        return [
+            [null],
+            [0],
+            [1],
+            [true],
+            [false],
+            [[]],
+            [['foo', 'bar']],
+            [[[]]],
+            ['']
+        ];
     }
 }

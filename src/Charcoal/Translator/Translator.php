@@ -31,10 +31,13 @@ class Translator extends SymfonyTranslator
     /**
      * Get a translation object from a value.
      * @param TranslationInterface|array|string $val The string or translation-object to retrieve.
-     * @return Translation
+     * @return Translation|null
      */
     public function translation($val)
     {
+        if ($this->isValidTranslation($val) === false) {
+            return null;
+        }
         $translation = new Translation($val, $this->languageManager);
         foreach ($this->languageManager->availableLanguages() as $lang) {
             if (!isset($translation[$lang]) || $translation[$lang] == $val) {
@@ -54,5 +57,41 @@ class Translator extends SymfonyTranslator
     {
         parent::setLocale($locale);
         $this->languageManager->setCurrentLanguage($locale);
+    }
+
+    /**
+     * @param mixed $val The value to be checked.
+     * @return boolean
+     */
+    private function isValidTranslation($val)
+    {
+        if ($val === null) {
+            return false;
+        }
+
+        if (is_string($val)) {
+            return !empty(trim($val));
+        }
+
+        if ($val instanceof Translation) {
+            return true;
+        }
+
+        if (is_array($val)) {
+            return !!array_filter(
+                $val,
+                function ($v, $k) {
+                    if (is_string($k) && is_string($v)) {
+                        if (strlen($k) && mb_strlen($v)) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                },
+                ARRAY_FILTER_USE_BOTH
+            );
+        }
+        return false;
     }
 }
