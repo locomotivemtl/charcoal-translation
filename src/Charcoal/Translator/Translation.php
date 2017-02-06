@@ -96,21 +96,17 @@ class Translation implements
         return $this;
     }
 
-        /**
-         * Alias of `ConfigurableTranslationTrait::hasLanguage()`.
-         *
-         * Called when using the objects as `isset($obj['foo'])`.
-         *
-         * @param  string $lang A language identifier.
-         * @return boolean
-         * @see    ArrayAccess::offsetExists()
-         * @throws InvalidArgumentException If array key isn't a string.
-         */
+    /**
+     * @param  string $lang A language identifier.
+     * @return boolean
+     * @see    ArrayAccess::offsetExists()
+     * @throws InvalidArgumentException If array key isn't a string.
+     */
     public function offsetExists($lang)
     {
         if (!is_string($lang)) {
             throw new InvalidArgumentException(
-                'Array key must be a string.'
+                sprintf('Translation key must be a string. (%s given)', gettype($lang))
             );
         }
 
@@ -118,8 +114,6 @@ class Translation implements
     }
 
     /**
-     * Alias of `self::val()`.
-     *
      * @see    ArrayAccess::offsetGet()
      * @param  string $lang A language identifier.
      * @return string A translated string.
@@ -130,7 +124,7 @@ class Translation implements
     {
         if (!is_string($lang)) {
             throw new InvalidArgumentException(
-                'Array key (language) must be a string.'
+                sprintf('Translation key must be a string. (%s given)', gettype($lang))
             );
         }
 
@@ -148,7 +142,7 @@ class Translation implements
     {
         if (!is_string($lang)) {
             throw new InvalidArgumentException(
-                'Array key must be a string.'
+                sprintf('Translation key must be a string. (%s given)', gettype($lang))
             );
         }
 
@@ -171,7 +165,7 @@ class Translation implements
     {
         if (!is_string($lang)) {
             throw new InvalidArgumentException(
-                'Array key must be a string.'
+                sprintf('Translation key must be a string. (%s given)', gettype($lang))
             );
         }
 
