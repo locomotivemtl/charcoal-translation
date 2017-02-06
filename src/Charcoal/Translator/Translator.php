@@ -10,6 +10,7 @@ use Charcoal\Translator\Translation;
 /**
  * Extends the symfony translator to allow returned values in a "Translation" oject,
  * containing localizations for all languages.
+ *
  */
 class Translator extends SymfonyTranslator
 {
@@ -29,8 +30,9 @@ class Translator extends SymfonyTranslator
     }
 
     /**
-     * Get a translation object from a value.
-     * @param TranslationInterface|array|string $val The string or translation-object to retrieve.
+     * Get a translation object from a (mixed) value.
+     *
+     * @param mixed $val The string or translation-object to retrieve.
      * @return Translation|null
      */
     public function translation($val)
@@ -45,6 +47,22 @@ class Translator extends SymfonyTranslator
             }
         }
         return $translation;
+    }
+
+    /**
+     * Get a translated string from a (mixed) value.
+     *
+     * @param mixed $val The string or translation-object to retrieve.
+     * @return string
+     */
+    public function translate($val)
+    {
+        if (is_string($val)) {
+            return $this->trans($val);
+        } else {
+            $translation = $this->translation($val);
+            return (string)$translation;
+        }
     }
 
     /**

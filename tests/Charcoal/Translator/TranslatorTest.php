@@ -38,6 +38,9 @@ class TranslatorTest extends PHPUnit_Framework_TestCase
         ]);
     }
 
+    /**
+     *
+     */
     public function testTranslation()
     {
         $ret = $this->obj->translation('foo');
@@ -57,7 +60,7 @@ class TranslatorTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('foobar', (string)$ret);
     }
 
-        /**
+    /**
      * @dataProvider invalidTranslationsProvider
      */
     public function testTranslationInvalidValuesReturnNull($val)
@@ -65,12 +68,43 @@ class TranslatorTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->obj->translation($val));
     }
 
+    /**
+     *
+     */
+    public function testTranslate()
+    {
+        $ret = $this->obj->translate('foo');
+        $this->assertEquals('foo', $ret);
+
+        $translation = $this->obj->translation('foo');
+        $this->assertEquals('foo', $this->obj->translate($translation));
+
+        $this->assertEquals('foobar', $this->obj->translate([
+            'foo' => 'foobar',
+            'bar' => 'barfoo'
+        ]));
+    }
+
+    /**
+     * @dataProvider invalidTranslationsProvider
+     */
+    public function testTranslateInvalidValuesReturnEmptyString($val)
+    {
+        $this->assertEquals('', $this->obj->translate($val));
+    }
+
+    /**
+     *
+     */
     public function testSetLocaleSetLanguageManagerCurrentLanguage()
     {
         $this->obj->setLocale('bar');
         $this->assertEquals('bar', $this->languageManager->currentLanguage());
     }
 
+    /**
+     *
+     */
     public function invalidTranslationsProvider()
     {
         return [
