@@ -102,7 +102,7 @@ class TranslatorServiceProvider implements ServiceProviderInterface
          */
         $container['language/manager'] = function (Container $container) {
             return new LanguageManager([
-                'languages'            => array_keys($container['languages']),
+                'languages'            => $container['languages'],
                 'default_language'     => $container['language/default'],
                 'fallback_languages'   => $container['language/fallbacks']
             ]);
