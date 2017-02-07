@@ -646,7 +646,7 @@ class CatalogScript extends AdminScript
                     'longPrefix'   => 'max-depth',
                     'castTo'       => 'int',
                     'description'  => 'Descend at most the given number of levels of directories. '.
-                                      'A negative value means no limit.',
+                                      'Zero means no limit.',
                     'defaultValue' => static::DEFAULT_MAX_DEPTH,
                     'prompt'       => 'Scan Depth (of directories)',
                     'acceptValue'  => function ($response) {
