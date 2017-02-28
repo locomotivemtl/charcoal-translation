@@ -13,6 +13,9 @@ use \Serializable;
 use \Charcoal\Config\ConfigurableInterface;
 use \Charcoal\Config\ConfigurableTrait;
 
+// Dependencies from 'charcoal-translator'
+use \Charcoal\Translator\Translation;
+
 // Local Dependencies
 use \Charcoal\Polyglot\MultilingualAwareInterface;
 use \Charcoal\Translation\ConfigurableTranslationTrait;
@@ -143,6 +146,8 @@ class TranslationString implements
     {
         if ($val instanceof TranslationStringInterface) {
             $this->val = $val->all();
+        } elseif (class_exists('\Charcoal\Translator\Translation') && ($val instanceof Translation)) {
+            $this->val = $val->data();
         } elseif (is_array($val) || is_a($val, 'Traversable')) {
             $this->val = [];
 
@@ -587,6 +592,10 @@ class TranslationString implements
         }
 
         if ($var instanceof TranslationStringInterface) {
+            return true;
+        }
+
+        if (class_exists('\Charcoal\Translator\Translation') && ($val instanceof Translation)) {
             return true;
         }
 
